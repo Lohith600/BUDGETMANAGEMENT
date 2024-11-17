@@ -1,2 +1,2 @@
 # BUDGETMANAGEMENT
-This is project of budget 
+This is the project of budget management using python
