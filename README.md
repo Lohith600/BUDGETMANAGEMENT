@@ -1,3 +1,2 @@
 # BUDGETMANAGEMENT
-This is the project of budget management using python
-hello worldarw
+This is the project of budget management made using python
