@@ -1,6 +1,6 @@
 from transaction import Transaction, Income, Expense, Savings
 
-def add():
+def add(listOfTransactions):
     choice=int(input("Enter the type of transaction\n1 for Income\n2 for Expense\n3 for Savings: "))
     amount=int(input("Enter the amount: "))
     date=input("Enter the transaction date: ")
@@ -18,12 +18,20 @@ def add():
         target_amount=input("Enter the target amount: ")
         object=Savings(amount,date,category,goal_name,target_amount)
 
-    return object
+    listOfTransactions.append(object)
 
-def print1(index,transactions):
-    print(transactions)
+def delete(listOfTransactions):
+    print("Index: Transaction:")
+    j=1
+    for i in listOfTransactions:
+        print(j," ",i)
+    choice=int(input("Enter the index of transaction to be deleted"))
+    del listOfTransactions[choice]
 
-transactions=[]
-transactions.append(add())
-for i in transactions:
-    print(i)
+def edit(listOfTransactions):
+    print("Index: Transaction:")
+    j=1
+    for i in listOfTransactions:
+        print(j," ",i)
+    choice=int(input("Enter the index of transaction to edited"))
+    
