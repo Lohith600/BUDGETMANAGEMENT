@@ -15,7 +15,7 @@ class Transaction:
         """
         String representation of the transaction.
         """
-        return f"Date: {self.date}, Category: {self.category}, Amount: ${self.amount:.2f}"
+        return f"Date: {self.date}, Category: {self.category}, Amount: Rs.{self.amount:.2f}"
 
 
 class Income(Transaction):
