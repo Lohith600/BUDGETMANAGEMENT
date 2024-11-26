@@ -53,29 +53,23 @@ class Expense(Transaction):
 
 
 class Savings(Transaction):
-    def __init__(self, amount, date, goal_name, target_amount):
+    def __init__(self, amount, date, goal, target_amount):
         """
         Subclass of Transaction for savings.
 
-        :param goal_name: str - Name of the savings goal.
+        :param goal: str - Name of the savings goal.
         :param target_amount: float - Target amount for the goal.
         """
         super().__init__(amount, date, category="Savings")
-        self.goal_name = goal_name
+        self.goal = goal
         self.target_amount = target_amount
-
-    def progress(self):
-        """
-        Calculate the progress percentage towards the savings goal.
-        """
-        return min((self.amount / self.target_amount) * 100, 100)
 
     def __str__(self):
         """
         String representation of the savings transaction.
         """
         progress = self.progress()
-        return f"[Savings] Goal: {self.goal_name}, Progress: {progress:.2f}%, " + super().__str__()
+        return f"[Savings] Goal: {self.goal}, Progress: {progress:.2f}%, " + super().__str__()
 
 
 # Example Usage
