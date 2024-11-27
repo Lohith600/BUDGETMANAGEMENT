@@ -122,14 +122,14 @@ def edit(listOfTransactions):
 def delete(listOfTransactions):
     # Get which transaction to delete
     serial = 1
-    choice = None
+    choice = 0
     for transaction in listOfTransactions:
         print(serial, ": ", transaction, sep='')
     
-    while choice <= 1 and choice >= len(listOfTransactions):
+    while choice <1 or choice > len(listOfTransactions):
         try:
             choice = int(input("Enter the serial number of the transaction you want to delete: "))
-            if choice <= 1 and choice >= len(listOfTransactions):
+            if choice < 1 or choice > len(listOfTransactions):
                 print("Invalid choice, please enter a correct choice.")
         except ValueError:
             print("Invalid input, please enter a number.")
