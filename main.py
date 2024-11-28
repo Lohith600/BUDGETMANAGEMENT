@@ -10,7 +10,7 @@ choice = None
 choices = [0,1,2,3,4,5,7,8,9]
 
 while True:
-    while choice not in choices:
+    while choice not in choices and UserName!=None:
         print("=====Budget Planner=====")
         print("1. Add Transaction")
         print("2. Edit Transaction")
@@ -59,3 +59,6 @@ while True:
         #                     the respective UserName folder
     choice = None
 
+if UserName==None:
+    print("Login First:")
+    budget_logic.login(LoginDict)
