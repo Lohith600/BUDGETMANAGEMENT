@@ -1,9 +1,13 @@
 import budget_logic
 
-listOfTransactions = []
+LoginDict={}
+UserName=budget_logic.login(LoginDict)
+
+listOfTransactions = []     #This list needs to be made from the UserName folder and then 
+#                           accessing files
 
 choice = None
-choices = [0,1,2,3,4,5,7,8]
+choices = [0,1,2,3,4,5,7,8,9]
 
 while True:
     while choice not in choices:
@@ -16,6 +20,7 @@ while True:
         print("6. Track Savings Progress")
         print("7. List Transactions")
         print("8. Find Transaction by Date")
+        print("9. Logout")
         print("0. Exit")
         try:
             choice = int(input())
@@ -48,5 +53,9 @@ while True:
         date = input("Enter the date in DD-MM-YYYY format: ")
         transactions = budget_logic.findTransactionByDate(listOfTransactions, date)
         print(transactions)
+    elif choice == 9:
+        UserName = budget_logic.login(LoginDict)
+        listOfTransactions = [] #Now the Transactions need to be again accessed from the csv filesfrom
+        #                     the respective UserName folder
     choice = None
 
