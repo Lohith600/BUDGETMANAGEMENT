@@ -3,41 +3,45 @@ import os
 
 #Text prompt for ID and Pass to be there at the start of program
 def login(LoginDict):
-    try:
-        choice=int(input("Enter 1 For exixting user\n2 For new user\n"))
-    except ValueError:
-        print("Enter correct value")
-    if choice==1:
-        while True:
-            UserName=input("Enter Username: ")
-            Password=input("Enter Password: ")
-            flag=UserName in LoginDict.keys()
-            if flag==True and LoginDict[UserName]==Password:
-                return UserName
-            elif flag==False:
-                print("User not found!")
-            else:
-                print("Wrong Combination! Try again...")
+    while True:
+        try:
+            choice=int(input("Enter:\n1. For exixting user\n2. For new user\n"))
+        except ValueError:
+            print("Enter correct value")
+        if choice==1:
+            while True:
+                UserName=input("Enter Username: ")
+                Password=input("Enter Password: ")
+                flag=UserName in LoginDict.keys()
+                if flag==True and LoginDict[UserName]==Password:
+                    return UserName
+                elif flag==False:
+                    print("User not found!")
+                else:
+                    print("Wrong Combination! Try again...")
 
-    elif choice==2:
-        while True:
-            UserName=input("Create Username: ")
-            Password=input("Enter Password: ")
-            ConfirmPassword=input("Confirm Password: ")
-            
-            flag=UserName in LoginDict.keys()
-            if flag==False and Password==ConfirmPassword:
-                LoginDict[UserName]=Password
-                os.mkdir(UserName)
-                open(f'{UserName}/income.csv', mode="w").close()
-                open(f'{UserName}/savings.csv', mode="w").close()
-                open(f'{UserName}/expenses.csv', mode="w").close()
-                print("User added!")
-                return UserName
-            elif flag==True:
-                print("User already exists")
-            else:
-                print("Both passwords are not same")
+        elif choice==2:
+            while True:
+                UserName=input("Create Username: ")
+                Password=input("Enter Password: ")
+                ConfirmPassword=input("Confirm Password: ")
+                
+                flag=UserName in LoginDict.keys()
+                if flag==False and Password==ConfirmPassword:
+                    LoginDict[UserName]=Password
+                    os.mkdir(UserName)
+                    open(f'{UserName}/income.csv', mode="w").close()
+                    open(f'{UserName}/savings.csv', mode="w").close()
+                    open(f'{UserName}/expenses.csv', mode="w").close()
+                    print("User added!")
+                    return UserName
+                elif flag==True:
+                    print("User already exists")
+                else:
+                    print("Both passwords are not same")
+        else:
+            print("Invalid Choice")
+
 
 
 def add(listOfTransactions):
