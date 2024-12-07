@@ -6,7 +6,7 @@ from transaction import Transaction, Income, Expense, Savings
 
 username = None
 listOfTransactions = []
-file_path= 'user_data.pk1'
+file_path= 'user_data.pkl'
 if os.path.exists(file_path):
     with open(file_path, 'rb') as file:
         LoginDict = pickle.load(file)
