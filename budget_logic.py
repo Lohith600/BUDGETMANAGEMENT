@@ -1,5 +1,5 @@
 from transaction import Transaction, Income, Expense, Savings
-import os
+import os, pickle
 import customtkinter as ctk
 import tkinter.messagebox as tkmsg
 
@@ -42,6 +42,17 @@ def add_transaction_window(app,main_frame,listOfTransactions):
     additional_label.pack(pady=5)
     additional_entry = ctk.CTkEntry(add_transaction_frame, width=300)
     additional_entry.pack(pady=5)
+
+    def getList(username):
+        file_path = f"{username}"
+        if os.path.exists(file_path):
+            file = open(file_path+'/transactions.pkl', 'rb')
+            listOfTransactions = pickle.load(file)
+        else:
+            file = open(file_path+'/transactions.pkl', 'wb')
+            listOfTransactions = []
+        return listOfTransactions
+
 
     def save_transaction():
         transaction_type = transaction_type_var.get()
