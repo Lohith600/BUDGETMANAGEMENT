@@ -12,6 +12,7 @@ if os.path.exists(file_path):
         LoginDict = pickle.load(file)
 
 else:
+    file = open(file_path, 'wb')
     LoginDict={}
 
 ctk.set_appearance_mode("System")
@@ -66,7 +67,14 @@ def login_action():
     if username in LoginDict and LoginDict[username] == password:
         tkmsg.showinfo("Login Successful", f"Welcome, {username}!")
         load_main_frame(username)
-        listOfTransactions=budget_logic.getList(username)
+        file_path = f"{username}"
+        if os.path.exists(file_path):
+            file = open(file_path+'/transactions.pkl', 'rb')
+            listOfTransactions = pickle.load(file)
+        else:
+            os.mkdir(file_path)
+            file = open(file_path+'/transactions.pkl', 'wb')
+            listOfTransactions = []
 
     else:
         tkmsg.showerror("Invalid Login", "Invalid Username or Password.")
