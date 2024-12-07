@@ -72,17 +72,3 @@ class Savings(Transaction):
         return f"[Savings] Goal: {self.goal}, Progress: {progress:.2f}%, " + super().__str__()
 
 
-# Example Usage
-if __name__ == "__main__":
-    # Create an income transaction
-    income = Income(amount=3000, date="2024-11-22", source="Salary")
-    print(income)
-
-    # Create an expense transaction
-    expense = Expense(amount=150, date="2024-11-21", category="Groceries", expense_type="Essential")
-    print(expense)
-
-    # Create a savings transaction
-    savings = Savings(amount=500, date="2024-11-20", goal_name="Emergency Fund", target_amount=2000)
-    print(savings)
-    
