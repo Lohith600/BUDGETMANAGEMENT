@@ -4,6 +4,7 @@ import os,pickle,budget_logic
 import tkinter.messagebox as tkmsg
 from transaction import Transaction, Income, Expense, Savings
 
+username = None
 listOfTransactions = []
 file_path= 'user_data.pk1'
 if os.path.exists(file_path):
@@ -58,6 +59,7 @@ main_frame = None
 
 
 def login_action():
+    global username, listOfTransactions
     username = username_entry.get()
     password = password_entry.get()
 
@@ -205,3 +207,7 @@ app.mainloop()
 
 with open(file_path,'wb') as file:
     pickle.dump(LoginDict,file)
+
+file_path1 = f"{username}/transactions.pkl"
+with open(file_path1, 'wb') as file:
+    pickle.dump(listOfTransactions,file)
