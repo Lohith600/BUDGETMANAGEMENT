@@ -1,19 +1,18 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import os,pickle,budget_logic
+import os, pickle, budget_logic
 import tkinter.messagebox as tkmsg
 from transaction import Transaction, Income, Expense, Savings
 
 username = None
 listOfTransactions = []
-file_path= 'user_data.pkl'
+file_path = 'user_data.pkl'
 if os.path.exists(file_path):
     with open(file_path, 'rb') as file:
         LoginDict = pickle.load(file)
-
 else:
     file = open(file_path, 'wb')
-    LoginDict={}
+    LoginDict = {}
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
@@ -23,7 +22,7 @@ app.title("BUDGET_MANAGEMENT")
 app.geometry("810x700")
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-image_path = os.path.join(current_directory, "../BUDGETMANAGEMENT/pictures/picture.jpg")
+image_path = os.path.join(current_directory, "../codebro/image/picture.jpg")
 
 # Global variable for background image reference
 bg_photo = None
@@ -47,7 +46,6 @@ load_background()
 
 # Heading frame for "MONTHLY BUDGET PLANNER"
 heading = ctk.CTkTextbox(app, width=400, height=100, bg_color="#dbdbdb", text_color="#ae897c")
-heading.place(relx=0.4, rely=0.07, anchor="center")
 heading.insert("0.0", "        MONTHLY BUDGET\n               PLANNER")
 heading.configure(font=("Helvetica", 28, "bold"))
 heading.configure(state="disabled")
@@ -59,6 +57,16 @@ login_frame.place(relx=0.4, rely=0.6, anchor="center")
 main_frame = None
 
 
+def show_heading():
+    """Display the heading widget on the login page."""
+    heading.place(relx=0.4, rely=0.07, anchor="center")
+
+
+def hide_heading():
+    """Hide the heading widget when switching to other pages."""
+    heading.place_forget()
+
+
 def login_action():
     global username, listOfTransactions
     username = username_entry.get()
@@ -66,29 +74,30 @@ def login_action():
 
     if username in LoginDict and LoginDict[username] == password:
         tkmsg.showinfo("Login Successful", f"Welcome, {username}!")
+        hide_heading()  # Hide the heading when switching to the main frame
         load_main_frame(username)
+
+        # Load transactions for the logged-in user
         file_path = f"{username}"
         if os.path.exists(file_path):
-            file = open(file_path+'/transactions.pkl', 'rb')
+            file = open(file_path + '/transactions.pkl', 'rb')
             listOfTransactions = pickle.load(file)
         else:
             os.mkdir(file_path)
-            file = open(file_path+'/transactions.pkl', 'wb')
+            file = open(file_path + '/transactions.pkl', 'wb')
             listOfTransactions = []
-
     else:
         tkmsg.showerror("Invalid Login", "Invalid Username or Password.")
         username_entry.delete(0, "end")
         password_entry.delete(0, "end")
 
 
-
 def signup_action():
-    # Hide the login frame and signup button
+    hide_heading()
+
     login_frame.place_forget()
     signup_button.place_forget()
 
-    # Create the signup frame
     signup_frame = ctk.CTkFrame(app, width=400, height=500)
     signup_frame.place(relx=0.4, rely=0.6, anchor="center")
 
@@ -107,7 +116,6 @@ def signup_action():
     new_password_entry = ctk.CTkEntry(signup_frame, width=300, show="*")
     new_password_entry.pack(pady=5)
 
-    # Function to handle the signup process
     def handle_signup():
         new_username = new_username_entry.get()
         new_password = new_password_entry.get()
@@ -119,28 +127,27 @@ def signup_action():
         else:
             LoginDict[new_username] = new_password
             tkmsg.showinfo("Signup Successful", "Account created successfully!")
-            signup_frame.place_forget()  # Hide the signup frame
-            login_frame.place(relx=0.4, rely=0.5, anchor="center")  # Show the login frame
-            signup_button.place(relx=0.4, rely=0.90, anchor="center")  # Show the signup button again
+            signup_frame.place_forget()
+            show_heading()
+            login_frame.place(relx=0.4, rely=0.5, anchor="center")
+            signup_button.place(relx=0.4, rely=0.90, anchor="center")
 
-    # OK button for Signup
     signup_ok_button = ctk.CTkButton(signup_frame, text="OK", command=handle_signup, height=40, width=150,
                                      fg_color="#fff5ea", text_color="#924444")
     signup_ok_button.pack(pady=20)
 
-    # Back button to return to the login screen
     back_button = ctk.CTkButton(signup_frame, text="Back", height=40, width=150,
                                 fg_color="#fff5ea", text_color="#924444",
                                 command=lambda: switch_to_login(signup_frame))
     back_button.pack(pady=10)
 
 
-# Function to switch back to the login frame
 def switch_to_login(frame_to_hide):
     print(LoginDict)
     frame_to_hide.place_forget()
     login_frame.place(relx=0.4, rely=0.5, anchor="center")
-    signup_button.place(relx=0.4, rely=0.90, anchor="center")  # Show the signup button again
+    show_heading()
+    signup_button.place(relx=0.4, rely=0.90, anchor="center")
 
 
 def load_main_frame(username):
@@ -177,18 +184,27 @@ def load_main_frame(username):
 
 
 def button_action(option):
-    if option == 1: 
+    if option == 1:
         from budget_logic import add_transaction_window
-         # Add Transaction
-        add_transaction_window(app,main_frame,listOfTransactions)
+        add_transaction_window(app, main_frame, listOfTransactions)
         print(listOfTransactions)
-    elif option == 9:  # Logout
+    elif option == 9:
         main_frame.place_forget()
         login_frame.place(relx=0.4, rely=0.5, anchor="center")
-    elif option == 0:  # Exit
+        show_heading()
+    elif option == 0:
         app.destroy()
+    elif option == 2:
+        from budget_logic import edit_transaction
+        edit_transaction(listOfTransactions, app, main_frame)
+    elif option == 3:
+        from budget_logic import delete_transaction
+        delete_transaction(app,main_frame,listOfTransactions)
+    elif option == 7:
+        from budget_logic import list_transactions
+        list_transactions(app,main_frame,listOfTransactions)
     else:
-        tkmsg.showinfo("no feature")
+        tkmsg.showinfo("No Feature")
 
 
 username_label = ctk.CTkLabel(login_frame, text="Username:")
@@ -211,11 +227,12 @@ signup_button = ctk.CTkButton(app, text="Signup", height=40, width=150, fg_color
                               command=signup_action)
 signup_button.place(relx=0.4, rely=0.90, anchor="center")
 
+show_heading()
 app.mainloop()
 
-with open(file_path,'wb') as file:
-    pickle.dump(LoginDict,file)
+with open(file_path, 'wb') as file:
+    pickle.dump(LoginDict, file)
 
 file_path1 = f"{username}/transactions.pkl"
 with open(file_path1, 'wb') as file:
-    pickle.dump(listOfTransactions,file)
+    pickle.dump(listOfTransactions, file)
