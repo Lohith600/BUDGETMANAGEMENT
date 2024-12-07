@@ -1,11 +1,17 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import os
+import os,pickle,budget_logic
 import tkinter.messagebox as tkmsg
 from transaction import Transaction, Income, Expense, Savings
 
 listOfTransactions = []
-LoginDict = {"panda": "1234"}
+file_path= 'user_data.pk1'
+if os.path.exists(file_path):
+    with open(file_path, 'rb') as file:
+        LoginDict = pickle.load(file)
+
+else:
+    LoginDict={}
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
@@ -14,7 +20,7 @@ app = ctk.CTk()
 app.title("BUDGET_MANAGEMENT")
 app.geometry("810x700")
 
-current_directory = os.path.dirname(os.path.abspath(__file__))
+current_directory = os.path.dirname(os.path.abspath(_file_))
 image_path = os.path.join(current_directory, "../BUDGETMANAGEMENT/pictures/picture.jpg")
 
 # Global variable for background image reference
@@ -58,10 +64,13 @@ def login_action():
     if username in LoginDict and LoginDict[username] == password:
         tkmsg.showinfo("Login Successful", f"Welcome, {username}!")
         load_main_frame(username)
+        listOfTransactions=budget_logic.getList(username)
+
     else:
         tkmsg.showerror("Invalid Login", "Invalid Username or Password.")
         username_entry.delete(0, "end")
         password_entry.delete(0, "end")
+
 
 
 def signup_action():
@@ -193,3 +202,6 @@ signup_button = ctk.CTkButton(app, text="Signup", height=40, width=150, fg_color
 signup_button.place(relx=0.4, rely=0.90, anchor="center")
 
 app.mainloop()
+
+with open(file_path,'wb') as file:
+    pickle.dump(LoginDict,file)
