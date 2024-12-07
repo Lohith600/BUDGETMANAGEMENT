@@ -92,7 +92,6 @@ def add_transaction_window(app,main_frame,listOfTransactions):
     back_button = ctk.CTkButton(add_transaction_frame, text="Back", height=40, width=200,
                                 fg_color="#fff5ea", text_color="#924444", command=back_to_main)
     back_button.pack(pady=10)
-
 def balance(listOfTransactions):
     totalIncome = sum(transaction.amount for transaction in listOfTransactions if isinstance(transaction, Income))
     totalExpense = sum(transaction.amount for transaction in listOfTransactions if isinstance(transaction, Expense))
