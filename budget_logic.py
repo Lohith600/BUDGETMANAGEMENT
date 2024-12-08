@@ -108,6 +108,10 @@ def add_transaction_window(app, main_frame, listOfTransactions):
             try:
                 target = float(additional)
                 transaction = Savings(amount, validated_date, details, target)
+                for obj in listOfTransactions:
+                        if isinstance(obj, Savings):
+                            if obj.goal == details:
+                                obj.target_amount = target
             except ValueError:
                 tkmsg.showerror("Error", "Invalid target entered for Savings!")
                 return
@@ -254,6 +258,10 @@ def edit_transaction(listofTransactions, app, main_frame):
                 try:
                     target = float(additional)
                     transaction = Savings(amount, date, details, target)
+                    for obj in listOfTransactions:
+                        if isinstance(obj, Savings):
+                            if obj.goal == details:
+                                obj.target_amount = target
                 except ValueError:
                     tkmsg.showerror("Error", "Invalid target entered for Savings!")
                     return
@@ -539,15 +547,52 @@ def cat_display(app, main_frame, listoftransactions):
     back_button.pack(side="left", padx=20, pady=10)
 
 
-def progress(listOfTransactions):
-    # Need to think about this a bit
-    ####### should  work on this 
-    pass
+def progress(app, main_frame, listOfTransactions):
+    main_frame.place_forget()
 
+    progress_frame = ctk.CTkFrame(app, width=810, height=600)
+    progress_frame.place(relx=0.5, rely=0.6, anchor="center")  
+    
+    goals = {}
+    for transaction in listOfTransactions:
+        if isinstance(transaction, Savings):
+            if transaction.goal in goals.keys():
+                goals[transaction.goal][1] += transaction.amount
+            else:
+                goals[transaction.goal] = [transaction.target_amount, transaction.amount]
 
-def describeTransactions(listOfTransactions):
-    return [str(transaction) for transaction in listOfTransactions]
+    text = ''
+    for goal in goals:
+        text = f"Goal : {goal}, Target : {goals[goal][0]}, Progress : {goals[goal][1]/goals[goal][0]*100}%"
+    
+    if not text:
+        text = "No Saving Transactions found."
 
+    textbox_frame = ctk.CTkFrame(progress_frame, width=800, height=400)
+    textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-def findTransactionByDate(listOfTransactions, date):
-    return [str(transaction) for transaction in listOfTransactions if transaction.date == date]
+    edit_textbox = ctk.CTkTextbox(textbox_frame, width=780, height=400)
+    edit_textbox.grid(row=0, column=0, sticky="nsew")
+    edit_textbox.insert("0.0", text)
+    edit_textbox.configure(state="disabled")
+
+    textbox_frame.grid_rowconfigure(0, weight=1)
+    textbox_frame.grid_columnconfigure(0, weight=1)
+
+    scrollbar = ctk.CTkScrollbar(textbox_frame, command=edit_textbox.yview)
+    scrollbar.grid(row=0, column=1, sticky="ns")
+    edit_textbox.configure(yscrollcommand=scrollbar.set)
+
+    input_frame = ctk.CTkFrame(progress_frame, width=800, height=100)
+    input_frame.pack(fill="x", pady=(0, 10))
+
+    def back_to_main():
+        progress_frame.place_forget()
+        main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+    button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
+    button.pack(pady=10)  
+    
+
+    
+    

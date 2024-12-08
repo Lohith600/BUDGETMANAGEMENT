@@ -68,7 +68,7 @@ class Savings(Transaction):
         """
         String representation of the savings transaction.
         """
-        progress = self.progress()
-        return f"[Savings] Goal: {self.goal}, Progress: {progress:.2f}%, " + super().__str__()
+        #progress = self.progress()
+        return f"[Savings] Goal: {self.goal}, Target: {self.target_amount:.2f}, " + super().__str__()
 
 
