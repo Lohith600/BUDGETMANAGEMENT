@@ -22,7 +22,7 @@ app.title("BUDGET_MANAGEMENT")
 app.geometry("810x700")
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-image_path = os.path.join(current_directory, "../codebro/image/picture.jpg")
+image_path = os.path.join(current_directory, "../BUDGETMANAGEMENT/pictures/picture.jpg")
 
 # Global variable for background image reference
 bg_photo = None
