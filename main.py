@@ -200,6 +200,9 @@ def button_action(option):
     elif option == 3:
         from budget_logic import delete_transaction
         delete_transaction(app,main_frame,listOfTransactions)
+    elif option == 4:
+        from budget_logic import calculate_balance
+        calculate_balance(app,main_frame,listOfTransactions)
     elif option == 7:
         from budget_logic import list_transactions
         list_transactions(app,main_frame,listOfTransactions)

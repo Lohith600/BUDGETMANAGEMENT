@@ -340,12 +340,43 @@ def list_transactions(app, main_frame, listofTransactions):
     button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
     button.pack(pady=10)  # Place directly below the textbox
 
-    
-def balance(listOfTransactions):
-    totalIncome = sum(transaction.amount for transaction in listOfTransactions if isinstance(transaction, Income))
-    totalExpense = sum(transaction.amount for transaction in listOfTransactions if isinstance(transaction, Expense))
-    balance = totalIncome - totalExpense
-    return [totalIncome, totalExpense, balance]
+def calculate_balance(app, main_frame, listofTransactions):
+    # Hide the main frame
+    main_frame.place_forget()
+
+    # Function to calculate total income, expenses, and balance
+    def calculate_totals(transactions):
+        totalIncome = sum(transaction.amount for transaction in transactions if isinstance(transaction, Income))
+        totalExpense = sum(transaction.amount for transaction in transactions if isinstance(transaction, Expense))
+        return totalIncome, totalExpense, totalIncome - totalExpense
+
+    # Perform the calculation
+    totalIncome, totalExpense, netBalance = calculate_totals(listofTransactions)
+
+    # Create a new frame for displaying the balance
+    balance_frame = ctk.CTkFrame(app, height=600, width=500)
+    balance_frame.place(relx=0.35, rely=0.5, anchor="center")
+
+    # Create the textbox to display the balance details
+    box = ctk.CTkTextbox(balance_frame, width=400, height=300)
+    box.place(relx=0.5, rely=0.3, anchor="center")
+    box.configure(font=("Arial", 22))  # Center the textbox
+    box.insert(
+        "0.0",
+        f"Your total income is: {totalIncome}\n\n\n"
+        f"Your total expense is: {totalExpense}\n\n\n"
+        f"Your net balance is: {netBalance}"
+    )
+    box.configure(state="disabled")  # Make the textbox read-only
+
+    # Function to go back to the main frame
+    def back_to_main():
+        balance_frame.place_forget()
+        main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+    # Add a "Back" button to return to the main frame
+    back_button = ctk.CTkButton(balance_frame, text="Back", command=back_to_main)
+    back_button.place(relx=0.5, rely=0.8, anchor="center")  # Center the button
 
 
 def categorize(listOfTransactions):
