@@ -24,7 +24,7 @@ app.geometry("810x700")
 current_directory = os.path.dirname(os.path.abspath(__file__))
 image_path = os.path.join(current_directory, "../BUDGETMANAGEMENT/pictures/picture.jpg")
 
-# Global variable for background image reference
+
 bg_photo = None
 
 
@@ -41,7 +41,7 @@ def load_background():
         print(f"Error loading image: {e}")
 
 
-# Load background for the app
+
 load_background()
 
 # Heading frame for "MONTHLY BUDGET PLANNER"
@@ -74,7 +74,7 @@ def login_action():
 
     if username in LoginDict and LoginDict[username] == password:
         tkmsg.showinfo("Login Successful", f"Welcome, {username}!")
-        hide_heading()  # Hide the heading when switching to the main frame
+        hide_heading()  
         load_main_frame(username)
 
         # Load transactions for the logged-in user

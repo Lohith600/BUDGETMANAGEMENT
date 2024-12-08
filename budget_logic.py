@@ -3,12 +3,42 @@ import os, pickle
 import customtkinter as ctk
 import tkinter.messagebox as tkmsg
 
-def add_transaction_window(app,main_frame,listOfTransactions):
-    
+import re
 
+def checkDate(date):
+    if re.match(r'^\d{2}\d{2}\d{4}$', date):  
+        s = date
+        day = int(s[0:2])
+        month = int(s[2:4])
+        year = int(s[4:8])
+        if year % 4 == 0:
+            if year % 100 == 0:
+                if year % 400 == 0:
+                    leap = 1
+                else:
+                    leap = 0 
+            else:
+                leap = 1
+        else:
+            leap = 0 
+
+        if month in [1,3,5,7,8,10,12]:
+            if day in range(1,32):
+                return s[0:2] + '-' + s[2:4] + '-' + s[4:8]
+        elif month in [4,6,9,11]:
+            if day in range(1,31):
+                return s[0:2] + '-' + s[2:4] + '-' + s[4:8]
+        elif month == 2:
+            if day in range(1,29+leap):
+                return s[0:2] + '-' + s[2:4] + '-' + s[4:8]
+    return None
+
+def add_transaction_window(app, main_frame, listOfTransactions):
+    
+    
     main_frame.place_forget()
 
-
+    
     add_transaction_frame = ctk.CTkFrame(app, width=400, height=500)
     add_transaction_frame.place(relx=0.4, rely=0.55, anchor="center")
 
@@ -28,7 +58,7 @@ def add_transaction_window(app,main_frame,listOfTransactions):
     amount_entry = ctk.CTkEntry(add_transaction_frame, width=300)
     amount_entry.pack(pady=5)
 
-    date_label = ctk.CTkLabel(add_transaction_frame, text="Date (DD-MM-YYYY):")
+    date_label = ctk.CTkLabel(add_transaction_frame, text="Date (DDMMYYYY):")
     date_label.pack(pady=5)
     date_entry = ctk.CTkEntry(add_transaction_frame, width=300)
     date_entry.pack(pady=5)
@@ -60,17 +90,24 @@ def add_transaction_window(app,main_frame,listOfTransactions):
         if not date or not transaction_type:
             tkmsg.showerror("Error", "Please fill all required fields!")
             return
+
+        
+        validated_date = checkDate(date)
+        if not validated_date:
+            tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
+            return
+
         if transaction_type == "Income":
-            transaction = Income(amount, date, details)
+            transaction = Income(amount, validated_date, details)
         elif transaction_type == "Expense":
             if not additional:
                 tkmsg.showerror("Error", "Please specify the type of Expense!")
                 return
-            transaction = Expense(amount, date, details, additional)
+            transaction = Expense(amount, validated_date, details, additional)
         elif transaction_type == "Savings":
             try:
                 target = float(additional)
-                transaction = Savings(amount, date, details, target)
+                transaction = Savings(amount, validated_date, details, target)
             except ValueError:
                 tkmsg.showerror("Error", "Invalid target entered for Savings!")
                 return
@@ -93,6 +130,7 @@ def add_transaction_window(app,main_frame,listOfTransactions):
     back_button = ctk.CTkButton(add_transaction_frame, text="Back", height=40, width=200,
                                 fg_color="#fff5ea", text_color="#924444", command=back_to_main)
     back_button.pack(pady=10)
+
 def edit_transaction(listofTransactions, app, main_frame):
     main_frame.place_forget()
 
@@ -363,7 +401,7 @@ def transaction_by_date(app, main_frame, listofTransactions):
 
     instruction_textbox = ctk.CTkTextbox(display, height=50, width=600,font=("Arial", 16))
     instruction_textbox.place(relx=0.5, rely=0.1, anchor="center")
-    instruction_textbox.insert("0.0", "                      Enter  the  date  in  the  DD-MM-YYYY  format")
+    instruction_textbox.insert("0.0", "                      Enter  the  date  in  the  DDMMYYYY  format")
     instruction_textbox.configure(state="disabled")
 
 
@@ -376,7 +414,8 @@ def transaction_by_date(app, main_frame, listofTransactions):
 
     
     def print_transaction():
-        x = date_entry.get()  
+        x = date_entry.get() 
+        x=x[0:2]+"-"+x[2:4]+"-"+x[4:8]
         text1 = ""
 
         
@@ -463,17 +502,17 @@ def cat_display(app, main_frame, listoftransactions):
     if not x:
         text1 = "No expenses yet"
     else:
-        # Adjust column widths for alignment
+        
         text1 = f"{'EXPENSE CATEGORY'.ljust(30)}{'AMOUNT'.rjust(10)}\n\n"
         for key, value in x.items():
             text1 += f"{str(key).ljust(30)}{str(value).rjust(10)}\n"
 
-    # Create Textbox Frame
+    
     textbox_frame = ctk.CTkFrame(frame, width=800, height=400)
     textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-    # Increase font size for the textbox
-    larger_font = ("Courier New", 16)  # Adjust font size here
+    
+    larger_font = ("Courier New", 16)  
     edit_textbox = ctk.CTkTextbox(textbox_frame, width=780, height=400, font=larger_font)
     edit_textbox.grid(row=0, column=0, sticky="nsew")
     edit_textbox.insert("0.0", text1)
@@ -486,23 +525,23 @@ def cat_display(app, main_frame, listoftransactions):
     scrollbar.grid(row=0, column=1, sticky="ns")
     edit_textbox.configure(yscrollcommand=scrollbar.set)
 
-    # Create Input Frame
+    
     input_frame = ctk.CTkFrame(frame, width=800, height=100)
     input_frame.pack(fill="x", pady=(0, 10))
 
-    # Back Button Function
+    
     def back_to_main():
         frame.place_forget()
         main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-    # Add Back Button to Input Frame
+    
     back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
     back_button.pack(side="left", padx=20, pady=10)
 
 
 def progress(listOfTransactions):
     # Need to think about this a bit
-    ########tell akshat to work on this 
+    ####### should  work on this 
     pass
 
 
