@@ -272,7 +272,7 @@ def delete_transaction(app, main_frame, listofTransactions):
     scrollbar.grid(row=0, column=1, sticky="ns")
     edit_textbox.configure(yscrollcommand=scrollbar.set)
 
-    # Input frame for entering transaction number and back button
+    # Input frame for entering transaction number and buttons
     input_frame = ctk.CTkFrame(del_transaction_frame, width=800, height=100)
     input_frame.pack(fill="x", pady=(0, 10))
 
@@ -300,108 +300,148 @@ def delete_transaction(app, main_frame, listofTransactions):
 
     # Delete button
     delete_button = ctk.CTkButton(input_frame, text="Delete", command=delete_trans)
-    delete_button.grid(row=0, column=2, padx=10, pady=10)
+    delete_button.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
     # Function to return to the main frame
     def back_to_main():
         del_transaction_frame.place_forget()
         main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-    # Back button to return to main frame
+    # Back button
     back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
-    back_button.grid(row=0, column=3, padx=10, pady=10)
+    back_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
+
+    # Configure grid weights for proper alignment
+    input_frame.grid_columnconfigure(0, weight=1)
+    input_frame.grid_columnconfigure(1, weight=1)
+    input_frame.grid_columnconfigure(2, weight=1)
 
 def calculate_balance(app, main_frame, listofTransactions):
-    # Hide the main frame
+    
     main_frame.place_forget()
 
-    # Function to calculate total income, expenses, and balance
+    
     def calculate_totals(transactions):
         totalIncome = sum(transaction.amount for transaction in transactions if isinstance(transaction, Income))
         totalExpense = sum(transaction.amount for transaction in transactions if isinstance(transaction, Expense))
         return totalIncome, totalExpense, totalIncome - totalExpense
 
-    # Perform the calculation
+    
     totalIncome, totalExpense, netBalance = calculate_totals(listofTransactions)
 
-    # Create a new frame for displaying the balance
+    
     balance_frame = ctk.CTkFrame(app, height=600, width=500)
     balance_frame.place(relx=0.35, rely=0.5, anchor="center")
 
-    # Create the textbox to display the balance details
+    
     box = ctk.CTkTextbox(balance_frame, width=400, height=300)
     box.place(relx=0.5, rely=0.3, anchor="center")
-    box.configure(font=("Arial", 22))  # Center the textbox
+    box.configure(font=("Arial", 22))  
     box.insert(
         "0.0",
         f"Your total income is: {totalIncome}\n\n\n"
         f"Your total expense is: {totalExpense}\n\n\n"
         f"Your net balance is: {netBalance}"
     )
-    box.configure(state="disabled")  # Make the textbox read-only
+    box.configure(state="disabled")  
 
-    # Function to go back to the main frame
+    
     def back_to_main():
         balance_frame.place_forget()
         main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-    # Add a "Back" button to return to the main frame
+    
     back_button = ctk.CTkButton(balance_frame, text="Back", command=back_to_main)
-    back_button.place(relx=0.5, rely=0.8, anchor="center")  # Center the button
+    back_button.place(relx=0.5, rely=0.8, anchor="center")  
 def transaction_by_date(app, main_frame, listofTransactions):
-    # Hide the main frame
     main_frame.place_forget()
 
-    # Create the display frame
+    
     display = ctk.CTkFrame(app, width=700, height=600)
     display.place(relx=0.5, rely=0.5, anchor="center")
 
-    # Instruction textbox at the top
+
     instruction_textbox = ctk.CTkTextbox(display, height=50, width=600,font=("Arial", 16))
     instruction_textbox.place(relx=0.5, rely=0.1, anchor="center")
     instruction_textbox.insert("0.0", "                      Enter  the  date  in  the  DD-MM-YYYY  format")
     instruction_textbox.configure(state="disabled")
 
-    # Label for entering the date
+
     label1 = ctk.CTkLabel(display, text="Enter the transaction date:")
     label1.place(relx=0.3, rely=0.2, anchor="center")
 
-    # Entry for the user to input the date
+    
     date_entry = ctk.CTkEntry(display, width=200)
     date_entry.place(relx=0.6, rely=0.2, anchor="center")
 
-    # Function to display transactions by date
+    
     def print_transaction():
-        x = date_entry.get()  # Get user input
+        x = date_entry.get()  
         text1 = ""
 
-        # Search for transactions with the given date
+        
         for transaction in listofTransactions:
             if transaction.date == x:
                 text1 += str(transaction) + "\n"
 
-        # If no transactions found, show a message
+        
         if not text1:
             text1 = "Transaction on the date does not exist."
 
-        # Display results in a textbox
+        
         result_textbox = ctk.CTkTextbox(display, width=600, height=300)
         result_textbox.place(relx=0.5, rely=0.6, anchor="center")
         result_textbox.insert("0.0", text1)
-        result_textbox.configure(state="disabled")  # Make textbox read-only
+        result_textbox.configure(state="disabled")  
 
-    # Button to trigger the search
+    
     search_button = ctk.CTkButton(display, text="Search", command=print_transaction)
     search_button.place(relx=0.5, rely=0.3, anchor="center")
 
-    # Function to return to the main frame
+
     def back_to_main():
         display.place_forget()
         main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-    # Button to go back to the main frame
+
     back_button = ctk.CTkButton(display, text="Back", command=back_to_main)
     back_button.place(relx=0.5, rely=0.9, anchor="center")
+def list_transactions(app, main_frame, listofTransactions):
+    main_frame.place_forget()
+
+    list_transaction_frame = ctk.CTkFrame(app, width=810, height=600)
+    list_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  
+    if len(listofTransactions) == 0:
+        text1 = "no transaction yet"
+    else:
+        text1 = ""
+        for i, transaction in enumerate(listofTransactions):
+            text1 += f"{i + 1}. {transaction}\n"
+
+    textbox_frame = ctk.CTkFrame(list_transaction_frame, width=800, height=400)
+    textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+    edit_textbox = ctk.CTkTextbox(textbox_frame, width=780, height=400)
+    edit_textbox.grid(row=0, column=0, sticky="nsew")
+    edit_textbox.insert("0.0", text1)
+    edit_textbox.configure(state="disabled")
+
+    textbox_frame.grid_rowconfigure(0, weight=1)
+    textbox_frame.grid_columnconfigure(0, weight=1)
+
+    scrollbar = ctk.CTkScrollbar(textbox_frame, command=edit_textbox.yview)
+    scrollbar.grid(row=0, column=1, sticky="ns")
+    edit_textbox.configure(yscrollcommand=scrollbar.set)
+
+    input_frame = ctk.CTkFrame(list_transaction_frame, width=800, height=100)
+    input_frame.pack(fill="x", pady=(0, 10))
+
+    def back_to_main():
+        list_transaction_frame.place_forget()
+        main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+    button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
+    button.pack(pady=10)  
 
 def categorize(listOfTransactions):
     categoryTotal = {}
