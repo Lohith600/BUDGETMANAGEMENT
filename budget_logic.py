@@ -361,7 +361,7 @@ def categorize(listOfTransactions):
 
 def progress(listOfTransactions):
     # Need to think about this a bit
-    ############should be worked upon
+    ########tell akshat to work on this 
     pass
 
 
