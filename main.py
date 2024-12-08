@@ -209,6 +209,9 @@ def button_action(option):
     elif option == 8:
         from budget_logic import transaction_by_date
         transaction_by_date(app,main_frame,listOfTransactions)
+    elif option == 5:
+        from budget_logic import cat_display
+        cat_display(app,main_frame,listOfTransactions)
     else:
         tkmsg.showinfo("No Feature")
 

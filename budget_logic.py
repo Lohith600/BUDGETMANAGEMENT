@@ -5,10 +5,10 @@ import tkinter.messagebox as tkmsg
 
 def add_transaction_window(app,main_frame,listOfTransactions):
     
-    # Hide the main frame
+
     main_frame.place_forget()
 
-    # Create a new frame for Add Transaction
+
     add_transaction_frame = ctk.CTkFrame(app, width=400, height=500)
     add_transaction_frame.place(relx=0.4, rely=0.55, anchor="center")
 
@@ -122,7 +122,7 @@ def edit_transaction(listofTransactions, app, main_frame):
     edit_textbox.configure(yscrollcommand=scrollbar.set)
 
     input_frame = ctk.CTkFrame(edit_transaction_frame, width=800, height=100)
-    input_frame.pack(fill="x", pady=(0, 10))  # Place directly below the textbox
+    input_frame.pack(fill="x", pady=(0, 10))  
 
     label1 = ctk.CTkLabel(input_frame, text="Enter the transaction number you want to edit:")
     label1.grid(row=0, column=0, padx=(20, 10), pady=10, sticky="w")
@@ -148,7 +148,7 @@ def edit_transaction(listofTransactions, app, main_frame):
         edit_transaction_frame.place_forget()
         main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-    # Back button to return to main frame
+    
     back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
     back_button.grid(row=0, column=2, padx=30, pady=10)
 
@@ -242,11 +242,11 @@ def edit_transaction(listofTransactions, app, main_frame):
 def delete_transaction(app, main_frame, listofTransactions):
     main_frame.place_forget()
 
-    # Main frame for delete transaction
+    
     del_transaction_frame = ctk.CTkFrame(app, width=810, height=600)
-    del_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  # Center the frame
+    del_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  
 
-    # Display list of transactions or a message if none exist
+    
     if len(listofTransactions) == 0:
         text1 = "No transactions yet."
     else:
@@ -254,11 +254,11 @@ def delete_transaction(app, main_frame, listofTransactions):
         for i, transaction in enumerate(listofTransactions):
             text1 += f"{i + 1}. {transaction}\n"
 
-    # Textbox frame
+    
     textbox_frame = ctk.CTkFrame(del_transaction_frame, width=800, height=400)
     textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-    # Textbox for displaying transactions
+    
     edit_textbox = ctk.CTkTextbox(textbox_frame, width=780, height=400)
     edit_textbox.grid(row=0, column=0, sticky="nsew")
     edit_textbox.insert("0.0", text1)
@@ -267,24 +267,24 @@ def delete_transaction(app, main_frame, listofTransactions):
     textbox_frame.grid_rowconfigure(0, weight=1)
     textbox_frame.grid_columnconfigure(0, weight=1)
 
-    # Scrollbar for the textbox
+    
     scrollbar = ctk.CTkScrollbar(textbox_frame, command=edit_textbox.yview)
     scrollbar.grid(row=0, column=1, sticky="ns")
     edit_textbox.configure(yscrollcommand=scrollbar.set)
 
-    # Input frame for entering transaction number and buttons
+    
     input_frame = ctk.CTkFrame(del_transaction_frame, width=800, height=100)
     input_frame.pack(fill="x", pady=(0, 10))
 
-    # Label for transaction input
+    
     label1 = ctk.CTkLabel(input_frame, text="Enter the transaction number you want to delete:")
     label1.grid(row=0, column=0, padx=(20, 10), pady=10, sticky="w")
 
-    # Entry widget for transaction input
+    
     trans_entry = ctk.CTkEntry(input_frame, width=200)
     trans_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
-    # Function to handle deletion
+    
     def delete_trans():
         num = trans_entry.get()
         try:
@@ -298,20 +298,20 @@ def delete_transaction(app, main_frame, listofTransactions):
         except ValueError:
             tkmsg.showinfo("Invalid input", "Please enter a valid number.")
 
-    # Delete button
+    
     delete_button = ctk.CTkButton(input_frame, text="Delete", command=delete_trans)
     delete_button.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
-    # Function to return to the main frame
+    
     def back_to_main():
         del_transaction_frame.place_forget()
         main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-    # Back button
+    
     back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
     back_button.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
 
-    # Configure grid weights for proper alignment
+    
     input_frame.grid_columnconfigure(0, weight=1)
     input_frame.grid_columnconfigure(1, weight=1)
     input_frame.grid_columnconfigure(2, weight=1)
@@ -442,16 +442,62 @@ def list_transactions(app, main_frame, listofTransactions):
 
     button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
     button.pack(pady=10)  
+def cat_display(app, main_frame, listoftransactions):
+    main_frame.place_forget()
 
-def categorize(listOfTransactions):
-    categoryTotal = {}
-    for transaction in listOfTransactions:
-        if isinstance(transaction, Expense):
-            if transaction.category in categoryTotal:
-                categoryTotal[transaction.category] += transaction.amount
-            else:
-                categoryTotal[transaction.category] = transaction.amount
-    return categoryTotal
+    frame = ctk.CTkFrame(app, width=810, height=600)
+    frame.place(relx=0.5, rely=0.6, anchor="center")
+
+    # Categorize Transactions
+    def categorize(listoftransactions):
+        categoryTotal = {}
+        for transaction in listoftransactions:
+            if isinstance(transaction, Expense):
+                if transaction.category in categoryTotal:
+                    categoryTotal[transaction.category] += transaction.amount
+                else:
+                    categoryTotal[transaction.category] = transaction.amount
+        return categoryTotal
+
+    x = categorize(listoftransactions)
+    if not x:
+        text1 = "No expenses yet"
+    else:
+        # Adjust column widths for alignment
+        text1 = f"{'EXPENSE CATEGORY'.ljust(30)}{'AMOUNT'.rjust(10)}\n\n"
+        for key, value in x.items():
+            text1 += f"{str(key).ljust(30)}{str(value).rjust(10)}\n"
+
+    # Create Textbox Frame
+    textbox_frame = ctk.CTkFrame(frame, width=800, height=400)
+    textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+    # Increase font size for the textbox
+    larger_font = ("Courier New", 16)  # Adjust font size here
+    edit_textbox = ctk.CTkTextbox(textbox_frame, width=780, height=400, font=larger_font)
+    edit_textbox.grid(row=0, column=0, sticky="nsew")
+    edit_textbox.insert("0.0", text1)
+    edit_textbox.configure(state="disabled")
+
+    textbox_frame.grid_rowconfigure(0, weight=1)
+    textbox_frame.grid_columnconfigure(0, weight=1)
+
+    scrollbar = ctk.CTkScrollbar(textbox_frame, command=edit_textbox.yview)
+    scrollbar.grid(row=0, column=1, sticky="ns")
+    edit_textbox.configure(yscrollcommand=scrollbar.set)
+
+    # Create Input Frame
+    input_frame = ctk.CTkFrame(frame, width=800, height=100)
+    input_frame.pack(fill="x", pady=(0, 10))
+
+    # Back Button Function
+    def back_to_main():
+        frame.place_forget()
+        main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+    # Add Back Button to Input Frame
+    back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
+    back_button.pack(side="left", padx=20, pady=10)
 
 
 def progress(listOfTransactions):
