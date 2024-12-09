@@ -142,7 +142,7 @@ def edit_transaction(listofTransactions, app, main_frame):
     else:
         text1 = ""
         for i, transaction in enumerate(listofTransactions):
-            text1 += f"{i + 1}. {transaction}\n"
+            text1 += f"{i + 1}. {transaction}\n\n"
 
     textbox_frame = ctk.CTkFrame(edit_transaction_frame, width=800, height=400)
     textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -290,7 +290,7 @@ def delete_transaction(app, main_frame, listofTransactions):
     else:
         text1 = ""
         for i, transaction in enumerate(listofTransactions):
-            text1 += f"{i + 1}. {transaction}\n"
+            text1 += f"{i + 1}. {transaction}\n\n"
 
     
     textbox_frame = ctk.CTkFrame(del_transaction_frame, width=800, height=400)
@@ -455,7 +455,7 @@ def list_transactions(app, main_frame, listofTransactions):
     else:
         text1 = ""
         for i, transaction in enumerate(listofTransactions):
-            text1 += f"{i + 1}. {transaction}\n"
+            text1 += f"{i + 1}. {transaction}\n\n"
 
     textbox_frame = ctk.CTkFrame(list_transaction_frame, width=800, height=400)
     textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -487,7 +487,7 @@ def cat_display(app, main_frame, listoftransactions):
     frame = ctk.CTkFrame(app, width=810, height=600)
     frame.place(relx=0.5, rely=0.6, anchor="center")
 
-    # Categorize Transactions
+
     def categorize(listoftransactions):
         categoryTotal = {}
         for transaction in listoftransactions:
@@ -536,7 +536,8 @@ def cat_display(app, main_frame, listoftransactions):
 
     
     back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
-    back_button.pack(side="left", padx=20, pady=10)
+    # back_button.pack(side="left", padx=20, pady=10)
+    back_button.place(relx=0.375,rely=0.5)
 
 
 def progress(listOfTransactions):
