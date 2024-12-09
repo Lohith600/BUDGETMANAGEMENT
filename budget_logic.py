@@ -39,63 +39,121 @@ def add_transaction_window(app, main_frame, listOfTransactions):
     main_frame.place_forget()
 
     
-    add_transaction_frame = ctk.CTkFrame(app, width=400, height=500)
-    add_transaction_frame.place(relx=0.4, rely=0.55, anchor="center")
+    add_transaction_frame = ctk.CTkFrame(app, width=400, height=600)
+    add_transaction_frame.place(relx=0.4, rely=0.5, anchor="center")
+    def Income1():
+        add_transaction_frame.place_forget()
+        Incomeframe=ctk.CTkFrame(app,width=400,height=500)
+        Incomeframe.place(relx=0.4, rely=0.675, anchor="center")
+        amount_label = ctk.CTkLabel(Incomeframe, text="Amount:")
+        amount_label.pack(pady=5)
+        amount_entry = ctk.CTkEntry(Incomeframe, width=300)
+        amount_entry.pack(pady=5)
 
-    heading_label = ctk.CTkLabel(add_transaction_frame, text="Edit Transaction", font=("Helvetica", 20, "bold"))
-    heading_label.pack(pady=20)
+        date_label = ctk.CTkLabel(Incomeframe, text="Date (DDMMYYYY):")
+        date_label.pack(pady=5)
+        date_entry = ctk.CTkEntry(Incomeframe, width=300)
+        date_entry.pack(pady=5)
 
-    transaction_type_label = ctk.CTkLabel(add_transaction_frame, text="Transaction Type:")
-    transaction_type_label.pack(pady=5)
-
-    transaction_type_var = ctk.StringVar()
-    transaction_type_dropdown = ctk.CTkOptionMenu(add_transaction_frame, values=["Income", "Expense", "Savings"],
-                                                  variable=transaction_type_var)
-    transaction_type_dropdown.pack(pady=5)
-
-    amount_label = ctk.CTkLabel(add_transaction_frame, text="Amount:")
-    amount_label.pack(pady=5)
-    amount_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-    amount_entry.pack(pady=5)
-
-    date_label = ctk.CTkLabel(add_transaction_frame, text="Date (DDMMYYYY):")
-    date_label.pack(pady=5)
-    date_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-    date_entry.pack(pady=5)
-
-    details_label = ctk.CTkLabel(add_transaction_frame, text="Details (Source/Category/Goal):")
-    details_label.pack(pady=5)
-    details_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-    details_entry.pack(pady=5)
-
-    additional_label = ctk.CTkLabel(add_transaction_frame, text="Type (for Expense) / Target (for Savings):")
-    additional_label.pack(pady=5)
-    additional_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-    additional_entry.pack(pady=5)
-
-
-    def save_transaction():
-        transaction_type = transaction_type_var.get()
-        amount = amount_entry.get()
-        date = date_entry.get()
-        details = details_entry.get()
-        additional = additional_entry.get()
-
-        try:
-            amount = float(amount)
-        except ValueError:
-            tkmsg.showerror("Error", "Invalid amount entered!")
-            return
-
-        if not date or not transaction_type:
-            tkmsg.showerror("Error", "Please fill all required fields!")
-            return
+        details_label = ctk.CTkLabel(Incomeframe, text="Details (Source/Category/Goal):")
+        details_label.pack(pady=5)
+        details_entry = ctk.CTkEntry(Incomeframe, width=300)
+        details_entry.pack(pady=5)
 
         
-        validated_date = checkDate(date)
-        if not validated_date:
-            tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
-            return
+
+
+        def save_transaction():
+            transaction_type="Income"
+            amount = amount_entry.get()
+            date = date_entry.get()
+            details = details_entry.get()
+            
+
+            try:
+                amount = float(amount)
+            except ValueError:
+                tkmsg.showerror("Error", "Invalid amount entered!")
+                return
+
+            if not date or not transaction_type:
+                tkmsg.showerror("Error", "Please fill all required fields!")
+                return
+
+            
+            validated_date = checkDate(date)
+            if not validated_date:
+                tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
+                return
+
+            if transaction_type == "Income":
+                transaction = Income(amount, validated_date, details)
+            else:
+                tkmsg.showerror("Error", "Invalid transaction type!")
+                return
+
+            listOfTransactions.append(transaction)
+            tkmsg.showinfo("Success", "Transaction added successfully!")
+            back_to_main()
+
+        save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
+                                    fg_color="#fff5ea", text_color="#924444", command=save_transaction)
+        save_button.pack(pady=20)
+
+        def back_to_main():
+            Incomeframe.place_forget()
+            main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+        back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
+                                    fg_color="#fff5ea", text_color="#924444", command=back_to_main)
+        back_button.pack(pady=10)
+    def Expense1():
+        add_transaction_frame.place_forget()
+        Incomeframe=ctk.CTkFrame(app,width=400,height=500)
+        Incomeframe.place(relx=0.4, rely=0.675, anchor="center")
+        amount_label = ctk.CTkLabel(Incomeframe, text="Amount:")
+        amount_label.pack(pady=5)
+        amount_entry = ctk.CTkEntry(Incomeframe, width=300)
+        amount_entry.pack(pady=5)
+
+        date_label = ctk.CTkLabel(Incomeframe, text="Date (DDMMYYYY):")
+        date_label.pack(pady=5)
+        date_entry = ctk.CTkEntry(Incomeframe, width=300)
+        date_entry.pack(pady=5)
+
+        details_label = ctk.CTkLabel(Incomeframe, text="Details (Source/Category/Goal):")
+        details_label.pack(pady=5)
+        details_entry = ctk.CTkEntry(Incomeframe, width=300)
+        details_entry.pack(pady=5)
+
+        additional_label = ctk.CTkLabel(Incomeframe, text="Type (for Expense) / Target (for Savings):")
+        additional_label.pack(pady=5)
+        additional_entry = ctk.CTkEntry(Incomeframe, width=300)
+        additional_entry.pack(pady=5)
+
+
+        def save_transaction():
+            transaction_type="Expense"
+            amount = amount_entry.get()
+            date = date_entry.get()
+            details = details_entry.get()
+            additional = additional_entry.get()
+
+            try:
+                amount = float(amount)
+            except ValueError:
+                tkmsg.showerror("Error", "Invalid amount entered!")
+                return
+
+            if not date or not transaction_type:
+                tkmsg.showerror("Error", "Please fill all required fields!")
+                return
+
+            
+            validated_date = checkDate(date)
+            if not validated_date:
+                tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
+                return
 
         if transaction_type == "Income":
             transaction = Income(amount, validated_date, details)
@@ -119,21 +177,112 @@ def add_transaction_window(app, main_frame, listOfTransactions):
             tkmsg.showerror("Error", "Invalid transaction type!")
             return
 
-        listOfTransactions.append(transaction)
-        tkmsg.showinfo("Success", "Transaction added successfully!")
-        back_to_main()
+            listOfTransactions.append(transaction)
+            tkmsg.showinfo("Success", "Transaction added successfully!")
+            back_to_main()
 
-    save_button = ctk.CTkButton(add_transaction_frame, text="Save Transaction", height=40, width=200,
-                                fg_color="#fff5ea", text_color="#924444", command=save_transaction)
-    save_button.pack(pady=20)
+        save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
+                                    fg_color="#fff5ea", text_color="#924444", command=save_transaction)
+        save_button.pack(pady=20)
 
-    def back_to_main():
+        def back_to_main():
+            Incomeframe.place_forget()
+            main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+        back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
+                                    fg_color="#fff5ea", text_color="#924444", command=back_to_main)
+        back_button.pack(pady=10)
+    def Savings1():
         add_transaction_frame.place_forget()
-        main_frame.place(relx=0.4, rely=0.55, anchor="center")
+        Incomeframe=ctk.CTkFrame(app,width=400,height=500)
+        Incomeframe.place(relx=0.4, rely=0.675, anchor="center")
+        amount_label = ctk.CTkLabel(Incomeframe, text="Amount:")
+        amount_label.pack(pady=5)
+        amount_entry = ctk.CTkEntry(Incomeframe, width=300)
+        amount_entry.pack(pady=5)
 
-    back_button = ctk.CTkButton(add_transaction_frame, text="Back", height=40, width=200,
-                                fg_color="#fff5ea", text_color="#924444", command=back_to_main)
-    back_button.pack(pady=10)
+        date_label = ctk.CTkLabel(Incomeframe, text="Date (DDMMYYYY):")
+        date_label.pack(pady=5)
+        date_entry = ctk.CTkEntry(Incomeframe, width=300)
+        date_entry.pack(pady=5)
+
+        details_label = ctk.CTkLabel(Incomeframe, text="Details (Source/Category/Goal):")
+        details_label.pack(pady=5)
+        details_entry = ctk.CTkEntry(Incomeframe, width=300)
+        details_entry.pack(pady=5)
+
+        additional_label = ctk.CTkLabel(Incomeframe, text="Type (for Expense) / Target (for Savings):")
+        additional_label.pack(pady=5)
+        additional_entry = ctk.CTkEntry(Incomeframe, width=300)
+        additional_entry.pack(pady=5)
+
+
+        def save_transaction():
+            transaction_type="Savings"
+            amount = amount_entry.get()
+            date = date_entry.get()
+            details = details_entry.get()
+            additional = additional_entry.get()
+
+            try:
+                amount = float(amount)
+            except ValueError:
+                tkmsg.showerror("Error", "Invalid amount entered!")
+                return
+
+            if not date or not transaction_type:
+                tkmsg.showerror("Error", "Please fill all required fields!")
+                return
+
+            
+            validated_date = checkDate(date)
+            if not validated_date:
+                tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
+                return
+
+            if transaction_type == "Income":
+                transaction = Income(amount, validated_date, details)
+            elif transaction_type == "Expense":
+                if not additional:
+                    tkmsg.showerror("Error", "Please specify the type of Expense!")
+                    return
+                transaction = Expense(amount, validated_date, details, additional)
+            elif transaction_type == "Savings":
+                try:
+                    target = float(additional)
+                    transaction = Savings(amount, validated_date, details, target)
+                except ValueError:
+                    tkmsg.showerror("Error", "Invalid target entered for Savings!")
+                    return
+            else:
+                tkmsg.showerror("Error", "Invalid transaction type!")
+                return
+
+            listOfTransactions.append(transaction)
+            tkmsg.showinfo("Success", "Transaction added successfully!")
+            back_to_main()
+
+        save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
+                                    fg_color="#fff5ea", text_color="#924444", command=save_transaction)
+        save_button.pack(pady=20)
+
+        def back_to_main():
+            Incomeframe.place_forget()
+            main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+        back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
+                                    fg_color="#fff5ea", text_color="#924444", command=back_to_main)
+        back_button.pack(pady=10)
+
+
+
+    button1=ctk.CTkButton(add_transaction_frame,text="income",command=Income1)
+    button2=ctk.CTkButton(add_transaction_frame,text="expense",command=Expense1)
+    button3=ctk.CTkButton(add_transaction_frame,text="savings",command=Savings1)
+    button1.place(relx=0.35,rely=0.3)
+    button2.place(relx=0.35,rely=0.5)
+    button3.place(relx=0.35,rely=0.7)
+
 
 def edit_transaction(listofTransactions, app, main_frame):
     main_frame.place_forget()
@@ -146,7 +295,7 @@ def edit_transaction(listofTransactions, app, main_frame):
     else:
         text1 = ""
         for i, transaction in enumerate(listofTransactions):
-            text1 += f"{i + 1}. {transaction}\n"
+            text1 += f"{i + 1}. {transaction}\n\n"
 
     textbox_frame = ctk.CTkFrame(edit_transaction_frame, width=800, height=400)
     textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -197,56 +346,122 @@ def edit_transaction(listofTransactions, app, main_frame):
     def edit_trans(app, x, listOfTransactions):
         edit_transaction_frame.place_forget()
 
-        add_transaction_frame = ctk.CTkFrame(app, width=400, height=500)
-        add_transaction_frame.place(relx=0.4, rely=0.55, anchor="center")
+    
+        add_transaction_frame = ctk.CTkFrame(app, width=400, height=600)
+        add_transaction_frame.place(relx=0.4, rely=0.5, anchor="center")
+        def Income1():
+            add_transaction_frame.place_forget()
+            Incomeframe=ctk.CTkFrame(app,width=400,height=500)
+            Incomeframe.place(relx=0.4, rely=0.675, anchor="center")
+            amount_label = ctk.CTkLabel(Incomeframe, text="Amount:")
+            amount_label.pack(pady=5)
+            amount_entry = ctk.CTkEntry(Incomeframe, width=300)
+            amount_entry.pack(pady=5)
 
-        heading_label = ctk.CTkLabel(add_transaction_frame, text="Edit Transaction", font=("Helvetica", 20, "bold"))
-        heading_label.pack(pady=20)
+            date_label = ctk.CTkLabel(Incomeframe, text="Date (DDMMYYYY):")
+            date_label.pack(pady=5)
+            date_entry = ctk.CTkEntry(Incomeframe, width=300)
+            date_entry.pack(pady=5)
 
-        transaction_type_label = ctk.CTkLabel(add_transaction_frame, text="Transaction Type:")
-        transaction_type_label.pack(pady=5)
+            details_label = ctk.CTkLabel(Incomeframe, text="Details (Source/Category/Goal):")
+            details_label.pack(pady=5)
+            details_entry = ctk.CTkEntry(Incomeframe, width=300)
+            details_entry.pack(pady=5)
 
-        transaction_type_var = ctk.StringVar()
-        transaction_type_dropdown = ctk.CTkOptionMenu(add_transaction_frame, values=["Income", "Expense", "Savings"],
-                                                     variable=transaction_type_var)
-        transaction_type_dropdown.pack(pady=5)
+            
 
-        amount_label = ctk.CTkLabel(add_transaction_frame, text="Amount:")
-        amount_label.pack(pady=5)
-        amount_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-        amount_entry.pack(pady=5)
 
-        date_label = ctk.CTkLabel(add_transaction_frame, text="Date (DD-MM-YYYY):")
-        date_label.pack(pady=5)
-        date_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-        date_entry.pack(pady=5)
+            def save_transaction():
+                transaction_type="Income"
+                amount = amount_entry.get()
+                date = date_entry.get()
+                details = details_entry.get()
+                
 
-        details_label = ctk.CTkLabel(add_transaction_frame, text="Details (Source/Category/Goal):")
-        details_label.pack(pady=5)
-        details_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-        details_entry.pack(pady=5)
+                try:
+                    amount = float(amount)
+                except ValueError:
+                    tkmsg.showerror("Error", "Invalid amount entered!")
+                    return
 
-        additional_label = ctk.CTkLabel(add_transaction_frame, text="Type (for Expense) / Target (for Savings):")
-        additional_label.pack(pady=5)
-        additional_entry = ctk.CTkEntry(add_transaction_frame, width=300)
-        additional_entry.pack(pady=5)
+                if not date or not transaction_type:
+                    tkmsg.showerror("Error", "Please fill all required fields!")
+                    return
 
-        def save_transaction():
-            transaction_type = transaction_type_var.get()
-            amount = amount_entry.get()
-            date = date_entry.get()
-            details = details_entry.get()
-            additional = additional_entry.get()
+                
+                validated_date = checkDate(date)
+                if not validated_date:
+                    tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
+                    return
 
-            try:
-                amount = float(amount)
-            except ValueError:
-                tkmsg.showerror("Error", "Invalid amount entered!")
-                return
+                if transaction_type == "Income":
+                    transaction = Income(amount, validated_date, details)
+                else:
+                    tkmsg.showerror("Error", "Invalid transaction type!")
+                    return
+
+                listOfTransactions[x-1]=transaction
+                tkmsg.showinfo("Success", "Transaction added successfully!")
+                back_to_main()
+
+            save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
+                                        fg_color="#fff5ea", text_color="#924444", command=save_transaction)
+            save_button.pack(pady=20)
+
+            def back_to_main():
+                Incomeframe.place_forget()
+                main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+            back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
+                                        fg_color="#fff5ea", text_color="#924444", command=back_to_main)
+            back_button.pack(pady=10)
+        def Expense1():
+            add_transaction_frame.place_forget()
+            Incomeframe=ctk.CTkFrame(app,width=400,height=500)
+            Incomeframe.place(relx=0.4, rely=0.675, anchor="center")
+            amount_label = ctk.CTkLabel(Incomeframe, text="Amount:")
+            amount_label.pack(pady=5)
+            amount_entry = ctk.CTkEntry(Incomeframe, width=300)
+            amount_entry.pack(pady=5)
+
+            date_label = ctk.CTkLabel(Incomeframe, text="Date (DDMMYYYY):")
+            date_label.pack(pady=5)
+            date_entry = ctk.CTkEntry(Incomeframe, width=300)
+            date_entry.pack(pady=5)
+
+            details_label = ctk.CTkLabel(Incomeframe, text="Details (Source/Category/Goal):")
+            details_label.pack(pady=5)
+            details_entry = ctk.CTkEntry(Incomeframe, width=300)
+            details_entry.pack(pady=5)
+
+            additional_label = ctk.CTkLabel(Incomeframe, text="Type (for Expense) / Target (for Savings):")
+            additional_label.pack(pady=5)
+            additional_entry = ctk.CTkEntry(Incomeframe, width=300)
+            additional_entry.pack(pady=5)
+
+
+            def save_transaction():
+                transaction_type="Expense"
+                amount = amount_entry.get()
+                date = date_entry.get()
+                details = details_entry.get()
+                additional = additional_entry.get()
+
+                try:
+                    amount = float(amount)
+                except ValueError:
+                    tkmsg.showerror("Error", "Invalid amount entered!")
+                    return
 
             if not date or not transaction_type:
                 tkmsg.showerror("Error", "Please fill all required fields!")
                 return
+            
+            validated_date = checkDate(date)
+            if not validated_date:
+                tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
+                return
+
             if transaction_type == "Income":
                 transaction = Income(amount, date, details)
             elif transaction_type == "Expense":
@@ -269,21 +484,111 @@ def edit_transaction(listofTransactions, app, main_frame):
                 tkmsg.showerror("Error", "Invalid transaction type!")
                 return
 
-            listOfTransactions[x - 1] = transaction
-            tkmsg.showinfo("Success", "Transaction added successfully!")
-            back_to_main()
+                tkmsg.showinfo("Success", "Transaction added successfully!")
+                back_to_main()
 
-        save_button = ctk.CTkButton(add_transaction_frame, text="Save Transaction", height=40, width=200,
-                                    fg_color="#fff5ea", text_color="#924444", command=save_transaction)
-        save_button.pack(pady=20)
+            save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
+                                        fg_color="#fff5ea", text_color="#924444", command=save_transaction)
+            save_button.pack(pady=20)
 
-        def back_to_main():
+            def back_to_main():
+                Incomeframe.place_forget()
+                main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+            back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
+                                        fg_color="#fff5ea", text_color="#924444", command=back_to_main)
+            back_button.pack(pady=10)
+        def Savings1():
             add_transaction_frame.place_forget()
-            main_frame.place(relx=0.4, rely=0.55, anchor="center")
+            Incomeframe=ctk.CTkFrame(app,width=400,height=500)
+            Incomeframe.place(relx=0.4, rely=0.675, anchor="center")
+            amount_label = ctk.CTkLabel(Incomeframe, text="Amount:")
+            amount_label.pack(pady=5)
+            amount_entry = ctk.CTkEntry(Incomeframe, width=300)
+            amount_entry.pack(pady=5)
 
-        back_button = ctk.CTkButton(add_transaction_frame, text="Back", height=40, width=200,
-                                    fg_color="#fff5ea", text_color="#924444", command=back_to_main)
-        back_button.pack(pady=10)
+            date_label = ctk.CTkLabel(Incomeframe, text="Date (DDMMYYYY):")
+            date_label.pack(pady=5)
+            date_entry = ctk.CTkEntry(Incomeframe, width=300)
+            date_entry.pack(pady=5)
+
+            details_label = ctk.CTkLabel(Incomeframe, text="Details (Source/Category/Goal):")
+            details_label.pack(pady=5)
+            details_entry = ctk.CTkEntry(Incomeframe, width=300)
+            details_entry.pack(pady=5)
+
+            additional_label = ctk.CTkLabel(Incomeframe, text="Type (for Expense) / Target (for Savings):")
+            additional_label.pack(pady=5)
+            additional_entry = ctk.CTkEntry(Incomeframe, width=300)
+            additional_entry.pack(pady=5)
+
+
+            def save_transaction():
+                transaction_type="Savings"
+                amount = amount_entry.get()
+                date = date_entry.get()
+                details = details_entry.get()
+                additional = additional_entry.get()
+
+                try:
+                    amount = float(amount)
+                except ValueError:
+                    tkmsg.showerror("Error", "Invalid amount entered!")
+                    return
+
+                if not date or not transaction_type:
+                    tkmsg.showerror("Error", "Please fill all required fields!")
+                    return
+
+                
+                validated_date = checkDate(date)
+                if not validated_date:
+                    tkmsg.showerror("Error", "Invalid date format! Please use DDMMYYYY.")
+                    return
+
+                if transaction_type == "Income":
+                    transaction = Income(amount, validated_date, details)
+                elif transaction_type == "Expense":
+                    if not additional:
+                        tkmsg.showerror("Error", "Please specify the type of Expense!")
+                        return
+                    transaction = Expense(amount, validated_date, details, additional)
+                elif transaction_type == "Savings":
+                    try:
+                        target = float(additional)
+                        transaction = Savings(amount, validated_date, details, target)
+                    except ValueError:
+                        tkmsg.showerror("Error", "Invalid target entered for Savings!")
+                        return
+                else:
+                    tkmsg.showerror("Error", "Invalid transaction type!")
+                    return
+
+                listOfTransactions[x-1]=transaction
+                tkmsg.showinfo("Success", "Transaction added successfully!")
+                back_to_main()
+
+            save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
+                                        fg_color="#fff5ea", text_color="#924444", command=save_transaction)
+            save_button.pack(pady=20)
+
+            def back_to_main():
+                Incomeframe.place_forget()
+                main_frame.place(relx=0.4, rely=0.55, anchor="center")
+
+            back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
+                                        fg_color="#fff5ea", text_color="#924444", command=back_to_main)
+            back_button.pack(pady=10)
+
+
+
+        button1=ctk.CTkButton(add_transaction_frame,text="income",command=Income1)
+        button2=ctk.CTkButton(add_transaction_frame,text="expense",command=Expense1)
+        button3=ctk.CTkButton(add_transaction_frame,text="savings",command=Savings1)
+        button1.place(relx=0.35,rely=0.3)
+        button2.place(relx=0.35,rely=0.5)
+        button3.place(relx=0.35,rely=0.7)
+
 
 def delete_transaction(app, main_frame, listofTransactions):
     main_frame.place_forget()
@@ -298,7 +603,7 @@ def delete_transaction(app, main_frame, listofTransactions):
     else:
         text1 = ""
         for i, transaction in enumerate(listofTransactions):
-            text1 += f"{i + 1}. {transaction}\n"
+            text1 += f"{i + 1}. {transaction}\n\n"
 
     
     textbox_frame = ctk.CTkFrame(del_transaction_frame, width=800, height=400)
@@ -465,7 +770,7 @@ def list_transactions(app, main_frame, listofTransactions):
     else:
         text1 = ""
         for i, transaction in enumerate(listofTransactions):
-            text1 += f"{i + 1}. {transaction}\n"
+            text1 += f"{i + 1}. {transaction}\n\n"
 
     textbox_frame = ctk.CTkFrame(list_transaction_frame, width=800, height=400)
     textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -497,7 +802,7 @@ def cat_display(app, main_frame, listoftransactions):
     frame = ctk.CTkFrame(app, width=810, height=600)
     frame.place(relx=0.5, rely=0.6, anchor="center")
 
-    # Categorize Transactions
+
     def categorize(listoftransactions):
         categoryTotal = {}
         for transaction in listoftransactions:
@@ -546,7 +851,8 @@ def cat_display(app, main_frame, listoftransactions):
 
     
     back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
-    back_button.pack(side="left", padx=20, pady=10)
+    # back_button.pack(side="left", padx=20, pady=10)
+    back_button.place(relx=0.375,rely=0.5)
 
 
 def progress(app, main_frame, listOfTransactions):
