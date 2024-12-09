@@ -172,6 +172,7 @@ def load_main_frame(username):
         ("Track Savings Progress", 6),
         ("List Transactions", 7),
         ("Find Transaction by Date", 8),
+        ("Generate Monthly Report", 10),
         ("Logout", 9),
         ("Exit", 0)
     ]
@@ -179,11 +180,11 @@ def load_main_frame(username):
     for text, option in options:
         button = ctk.CTkButton(main_frame, text=text, height=40, width=250,
                                fg_color="#fff5ea", text_color="#924444",
-                               command=lambda opt=option: button_action(opt))
+                               command=lambda opt=option: button_action(opt,username))
         button.pack(pady=5)
 
 
-def button_action(option):
+def button_action(option,username):
     if option == 1:
         from budget_logic import add_transaction_window
         add_transaction_window(app, main_frame, listOfTransactions)
@@ -215,6 +216,9 @@ def button_action(option):
     elif option == 5:
         from budget_logic import cat_display
         cat_display(app,main_frame,listOfTransactions)
+    elif option == 10:
+        from report_generator import saveToCSV
+        saveToCSV(username, listOfTransactions)
     else:
         tkmsg.showinfo("No Feature")
 

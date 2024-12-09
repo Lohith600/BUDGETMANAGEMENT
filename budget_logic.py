@@ -593,6 +593,3 @@ def progress(app, main_frame, listOfTransactions):
     button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
     button.pack(pady=10)  
     
-
-    
-    
