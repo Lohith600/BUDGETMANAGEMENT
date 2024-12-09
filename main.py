@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
+from datetime import datetime
 import os, pickle, budget_logic, csv
 import tkinter.messagebox as tkmsg
 from transaction import Transaction, Income, Expense, Savings
@@ -261,6 +262,8 @@ with open(file_path1, 'wb') as file:
         "Expense Type/Goal", 
         "Target Amount"
     ]
+
+listOfTransactions = sorted(listOfTransactions, key=lambda transaction: datetime.strptime(transaction.date, "%d-%m-%Y"))
     
 with open(f"{username}/transactions.csv", mode="w", newline="") as file:
     writer = csv.writer(file)
