@@ -370,10 +370,11 @@ def calculate_balance(app, main_frame, listofTransactions):
     def calculate_totals(transactions):
         totalIncome = sum(transaction.amount for transaction in transactions if isinstance(transaction, Income))
         totalExpense = sum(transaction.amount for transaction in transactions if isinstance(transaction, Expense))
-        return totalIncome, totalExpense, totalIncome - totalExpense
+        totalSavings = sum(transaction.amount for transaction in transactions if isinstance(transaction, Savings))
+        return totalIncome, totalExpense, totalIncome - totalExpense - totalSavings, totalSavings
 
     
-    totalIncome, totalExpense, netBalance = calculate_totals(listofTransactions)
+    totalIncome, totalExpense, netBalance, totalSavings = calculate_totals(listofTransactions)
 
     
     balance_frame = ctk.CTkFrame(app, height=600, width=500)
@@ -387,6 +388,7 @@ def calculate_balance(app, main_frame, listofTransactions):
         "0.0",
         f"Your total income is: {totalIncome}\n\n\n"
         f"Your total expense is: {totalExpense}\n\n\n"
+        f"Your total savings are: {totalSavings}\n\n\n"
         f"Your net balance is: {netBalance}"
     )
     box.configure(state="disabled")  

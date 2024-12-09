@@ -85,7 +85,7 @@ def saveToCSV(username, listOfTransactions):
             row = [monthYear,
                    totals[0],
                    totals[1],
-                   totals[0]-totals[1],
+                   totals[0]-totals[1]-totals[2],
                    totals[2],
                    ''
                    ]

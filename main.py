@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import os, pickle, budget_logic
+import os, pickle, budget_logic, csv
 import tkinter.messagebox as tkmsg
 from transaction import Transaction, Income, Expense, Savings
 
@@ -252,3 +252,45 @@ with open(file_path, 'wb') as file:
 file_path1 = f"{username}/transactions.pkl"
 with open(file_path1, 'wb') as file:
     pickle.dump(listOfTransactions, file)
+
+    header = [
+        "Transaction Type", 
+        "Amount", 
+        "Date", 
+        "Category/Source", 
+        "Expense Type/Goal", 
+        "Target Amount"
+    ]
+    
+with open(f"{username}/transactions.csv", mode="w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+
+    for transaction in listOfTransactions:
+        if isinstance(transaction, Income):
+            writer.writerow([
+                "Income",
+                transaction.amount,
+                transaction.date,
+                transaction.source,
+                "",
+                ""
+            ])
+        elif isinstance(transaction, Expense):
+            writer.writerow([
+                "Expense",
+                transaction.amount,
+                transaction.date,
+                transaction.category,
+                transaction.expense_type,
+                ""
+            ])
+        elif isinstance(transaction, Savings):
+            writer.writerow([
+                "Savings",
+                transaction.amount,
+                transaction.date,
+                transaction.goal,
+                "",
+                transaction.target_amount
+            ])
