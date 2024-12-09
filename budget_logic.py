@@ -563,7 +563,7 @@ def progress(app, main_frame, listOfTransactions):
 
     text = ''
     for goal in goals:
-        text = f"Goal : {goal}, Target : {goals[goal][0]}, Progress : {goals[goal][1]/goals[goal][0]*100}%"
+        text += f"Goal : {goal}, Target : {goals[goal][0]}, Progress : {round(goals[goal][1]/goals[goal][0]*100,2)}%\n"
     
     if not text:
         text = "No Saving Transactions found."

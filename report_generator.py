@@ -70,28 +70,29 @@ def saveToCSV(username, listOfTransactions):
     monthYearDict = groupByMonth(listOfTransactions)
     report = generateReport(monthYearDict)
     categoryExpenses = {}
-    goalDict = {}
+    goalDict = goalGenerator(listOfTransactions)
     for monthYear, transactions in monthYearDict.items():
         categoryExpenses[monthYear] = categorize(transactions)
-        goalDict[monthYear] = goalGenerator(listOfTransactions)
 
     with open(f"{username}/monthlyreport.csv", 'w', newline='') as file:
         writer = csv.writer(file)
-        categories = [cat for month in categoryExpenses.values() for cat in month]
-        goals = [goal for month in goalDict.values() for goal in month]
-        header = ["Month-Year", "Total Income", "Total Expenses", "Balance", "Total Savings"] + categories + goals
-        writer.writerow(header)
+        categories = list(set(cat for month in categoryExpenses.values() for cat in month))
+        #goals = list(set(goal for month in goalDict.values() for goal in month))
+        header = ["Month-Year", "Total Income", "Total Expenses", "Balance", "Total Savings", "Expenses:"] + categories
+        writer.writerows([header,[]])
 
         for monthYear, totals in report.items():
             row = [monthYear,
                    totals[0],
                    totals[1],
                    totals[0]-totals[1],
-                   totals[2]
+                   totals[2],
+                   ''
                    ]
             for category in categories:
                 row.append(categoryExpenses.get(monthYear, {}).get(category, 0))
-            for goal in goals:
-                savings = goalDict.get(monthYear,{}).get(goal,0)
-                row.append(str(savings[1]/savings[0]*100) + '%')
+            writer.writerow(row)
+        writer.writerows([[],[],["Savings","Target Amount","Amount Saved","Progress"],[]])
+        for goal in goalDict:
+            row = [goal,goalDict[goal][0],goalDict[goal][1], str(round(goalDict[goal][1]/goalDict[goal][0]*100,2))+'%']
             writer.writerow(row)
