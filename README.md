@@ -66,16 +66,20 @@ The **Monthly Budget Management Application** is a GUI-based tool to help users 
 
 ## Libraries and Modules Used
 
-1. **CustomTkinter**:
+1, **TKinter**:
+   - For creating main app design.
+2. **CustomTkinter**:
    - For creating a modern and intuitive GUI.
-2. **Pillow**:
+3. **Pillow**:
    - For image handling and display in the GUI.
-3. **Pickle**:
+4. **Pickle**:
    - For data serialization and persistent storage.
-4. **CSV**:
+5. **CSV**:
    - To save and manage transaction reports.
-5. **Calendar**:
+6. **Calendar**:
    - To sort months in logical order for reports.
+7. **OS**
+   - For functionalities with file handling
 
 ---
 

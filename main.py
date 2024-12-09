@@ -221,6 +221,7 @@ def button_action(option,username):
     elif option == 10:
         from report_generator import saveToCSV
         saveToCSV(username, listOfTransactions)
+        tkmsg.showinfo("Report Generated!", f"Report saved in {username}/monthlyreport.csv")
     else:
         tkmsg.showinfo("No Feature")
 
