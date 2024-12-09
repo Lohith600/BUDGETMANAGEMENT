@@ -1,18 +1,20 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import os, pickle, budget_logic
+from datetime import datetime
+import os, pickle, budget_logic, csv
 import tkinter.messagebox as tkmsg
-from transaction import Transaction, Income, Expense, Savings
+from transaction import Transaction, Income, Expense, Savings, UserLoginDetail
+from budget_logic import BudgetPlanner
 
 username = None
 listOfTransactions = []
 file_path = 'user_data.pkl'
 if os.path.exists(file_path):
     with open(file_path, 'rb') as file:
-        LoginDict = pickle.load(file)
+        UserLoginDetail.LoginDict = pickle.load(file)
 else:
     file = open(file_path, 'wb')
-    LoginDict = {}
+    UserLoginDetail.LoginDict = {}
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
@@ -72,7 +74,7 @@ def login_action():
     username = username_entry.get()
     password = password_entry.get()
 
-    if username in LoginDict and LoginDict[username] == password:
+    if username in UserLoginDetail.LoginDict and UserLoginDetail.LoginDict[username] == password:
         tkmsg.showinfo("Login Successful", f"Welcome, {username}!")
         hide_heading()  
         load_main_frame(username)
@@ -120,12 +122,12 @@ def signup_action():
         new_username = new_username_entry.get()
         new_password = new_password_entry.get()
 
-        if new_username in LoginDict:
+        if new_username in UserLoginDetail.LoginDict:
             tkmsg.showerror("Signup Failed", "Username already exists!")
         elif not new_username or not new_password:
             tkmsg.showerror("Signup Failed", "Both fields are required!")
         else:
-            LoginDict[new_username] = new_password
+            UserLoginDetail.LoginDict[new_username]=new_password
             tkmsg.showinfo("Signup Successful", "Account created successfully!")
             signup_frame.place_forget()
             show_heading()
@@ -143,7 +145,7 @@ def signup_action():
 
 
 def switch_to_login(frame_to_hide):
-    print(LoginDict)
+    print(UserLoginDetail.LoginDict)
     frame_to_hide.place_forget()
     login_frame.place(relx=0.4, rely=0.5, anchor="center")
     show_heading()
@@ -172,6 +174,7 @@ def load_main_frame(username):
         ("Track Savings Progress", 6),
         ("List Transactions", 7),
         ("Find Transaction by Date", 8),
+        ("Generate Monthly Report", 10),
         ("Logout", 9),
         ("Exit", 0)
     ]
@@ -179,14 +182,14 @@ def load_main_frame(username):
     for text, option in options:
         button = ctk.CTkButton(main_frame, text=text, height=40, width=250,
                                fg_color="#fff5ea", text_color="#924444",
-                               command=lambda opt=option: button_action(opt))
+                               command=lambda opt=option: button_action(opt,username))
         button.pack(pady=5)
 
 
-def button_action(option):
+def button_action(option,username):
     if option == 1:
-        from budget_logic import add_transaction_window
-        add_transaction_window(app, main_frame, listOfTransactions)
+        # from budget_logic import add_transaction_window
+        BudgetPlanner.add_transaction_window(app, main_frame, listOfTransactions)
         print(listOfTransactions)
     elif option == 9:
         main_frame.place_forget()
@@ -195,26 +198,30 @@ def button_action(option):
     elif option == 0:
         app.destroy()
     elif option == 2:
-        from budget_logic import edit_transaction
-        edit_transaction(listOfTransactions, app, main_frame)
+        # from budget_logic import edit_transaction
+        BudgetPlanner.edit_transaction(listOfTransactions, app, main_frame)
     elif option == 3:
-        from budget_logic import delete_transaction
-        delete_transaction(app,main_frame,listOfTransactions)
+        # from budget_logic import delete_transaction
+        BudgetPlanner.delete_transaction(app,main_frame,listOfTransactions)
     elif option == 4:
-        from budget_logic import calculate_balance
-        calculate_balance(app,main_frame,listOfTransactions)
+        # from budget_logic import calculate_balance
+        BudgetPlanner.calculate_balance(app,main_frame,listOfTransactions)
     elif option == 6:
-        from budget_logic import progress
-        progress(app,main_frame,listOfTransactions)
+        # from budget_logic import progress
+        BudgetPlanner.progress(app,main_frame,listOfTransactions)
     elif option == 7:
-        from budget_logic import list_transactions
-        list_transactions(app,main_frame,listOfTransactions)
+        # from budget_logic import list_transactions
+        BudgetPlanner.list_transactions(app,main_frame,listOfTransactions)
     elif option == 8:
-        from budget_logic import transaction_by_date
-        transaction_by_date(app,main_frame,listOfTransactions)
+        # from budget_logic import transaction_by_date
+        BudgetPlanner.transaction_by_date(app,main_frame,listOfTransactions)
     elif option == 5:
-        from budget_logic import cat_display
-        cat_display(app,main_frame,listOfTransactions)
+        # from budget_logic import cat_display
+        BudgetPlanner.cat_display(app,main_frame,listOfTransactions)
+    elif option == 10:
+        from report_generator import saveToCSV
+        saveToCSV(username, listOfTransactions)
+        tkmsg.showinfo("Report Generated!", f"Report saved in {username}/monthlyreport.csv")
     else:
         tkmsg.showinfo("No Feature")
 
@@ -243,8 +250,52 @@ show_heading()
 app.mainloop()
 
 with open(file_path, 'wb') as file:
-    pickle.dump(LoginDict, file)
+    pickle.dump(UserLoginDetail.LoginDict, file)
 
 file_path1 = f"{username}/transactions.pkl"
 with open(file_path1, 'wb') as file:
     pickle.dump(listOfTransactions, file)
+
+    header = [
+        "Transaction Type", 
+        "Amount", 
+        "Date", 
+        "Category/Source", 
+        "Expense Type/Goal", 
+        "Target Amount"
+    ]
+
+listOfTransactions = sorted(listOfTransactions, key=lambda transaction: datetime.strptime(transaction.date, "%d-%m-%Y"))
+    
+with open(f"{username}/transactions.csv", mode="w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+
+    for transaction in listOfTransactions:
+        if isinstance(transaction, Income):
+            writer.writerow([
+                "Income",
+                transaction.amount,
+                transaction.date,
+                transaction.source,
+                "",
+                ""
+            ])
+        elif isinstance(transaction, Expense):
+            writer.writerow([
+                "Expense",
+                transaction.amount,
+                transaction.date,
+                transaction.category,
+                transaction.expense_type,
+                ""
+            ])
+        elif isinstance(transaction, Savings):
+            writer.writerow([
+                "Savings",
+                transaction.amount,
+                transaction.date,
+                transaction.goal,
+                "",
+                transaction.target_amount
+            ])

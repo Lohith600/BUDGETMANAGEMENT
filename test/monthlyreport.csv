@@ -1,0 +1,15 @@
+Month-Year,Total Income,Total Expenses,Balance,Total Savings,Expenses:,Streaming Subscriptions,Transportation,Dining Out,Movies,Groceries,Fitness Classes,Gym Membership,Books,Snacks
+
+January2024,5000.0,500.0,3500.0,1000.0,,0,0,300.0,0,200.0,0,0,0,0
+February2024,10400.0,600.0,9100.0,700.0,,0,150.0,0,450.0,0,0,0,0,0
+March2024,5000.0,1100.0,3500.0,400.0,,0,0,0,0,700.0,0,200.0,0,200.0
+April2024,5300.0,400.0,3600.0,1300.0,,100.0,0,0,0,0,0,0,300.0,0
+May2024,5400.0,250.0,4850.0,300.0,,0,0,0,0,0,250.0,0,0,0
+
+
+Savings,Target Amount,Amount Saved,Progress
+
+Vacation,3000.0,2500.0,83.33%
+New Laptop,1000.0,400.0,40.0%
+Emergency Fund,5000.0,500.0,10.0%
+Car Fund,5000.0,300.0,6.0%
