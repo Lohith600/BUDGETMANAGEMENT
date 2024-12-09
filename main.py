@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 from datetime import datetime
 import os, pickle, budget_logic, csv
 import tkinter.messagebox as tkmsg
-from transaction import Transaction, Income, Expense, Savings
+from transaction import Transaction, Income, Expense, Savings, UserLoginDetail
 from budget_logic import BudgetPlanner
 
 username = None
@@ -11,10 +11,10 @@ listOfTransactions = []
 file_path = 'user_data.pkl'
 if os.path.exists(file_path):
     with open(file_path, 'rb') as file:
-        LoginDict = pickle.load(file)
+        UserLoginDetail.LoginDict = pickle.load(file)
 else:
     file = open(file_path, 'wb')
-    LoginDict = {}
+    UserLoginDetail.LoginDict = {}
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
@@ -74,7 +74,7 @@ def login_action():
     username = username_entry.get()
     password = password_entry.get()
 
-    if username in LoginDict and LoginDict[username] == password:
+    if username in UserLoginDetail.LoginDict and UserLoginDetail.LoginDict[username] == password:
         tkmsg.showinfo("Login Successful", f"Welcome, {username}!")
         hide_heading()  
         load_main_frame(username)
@@ -122,12 +122,12 @@ def signup_action():
         new_username = new_username_entry.get()
         new_password = new_password_entry.get()
 
-        if new_username in LoginDict:
+        if new_username in UserLoginDetail.UserLoginDetail.LoginDict:
             tkmsg.showerror("Signup Failed", "Username already exists!")
         elif not new_username or not new_password:
             tkmsg.showerror("Signup Failed", "Both fields are required!")
         else:
-            LoginDict[new_username] = new_password
+            obj=UserLoginDetal(new_username,new_password)
             tkmsg.showinfo("Signup Successful", "Account created successfully!")
             signup_frame.place_forget()
             show_heading()
@@ -145,7 +145,7 @@ def signup_action():
 
 
 def switch_to_login(frame_to_hide):
-    print(LoginDict)
+    print(UserLoginDetail.LoginDict)
     frame_to_hide.place_forget()
     login_frame.place(relx=0.4, rely=0.5, anchor="center")
     show_heading()
@@ -249,7 +249,7 @@ show_heading()
 app.mainloop()
 
 with open(file_path, 'wb') as file:
-    pickle.dump(LoginDict, file)
+    pickle.dump(UserLoginDetail.LoginDict, file)
 
 file_path1 = f"{username}/transactions.pkl"
 with open(file_path1, 'wb') as file:

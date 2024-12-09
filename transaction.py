@@ -71,4 +71,14 @@ class Savings(Transaction):
         #progress = self.progress()
         return f"[Savings] Goal: {self.goal}, Target: {self.target_amount:.2f}, " + super().__str__()
 
-
+class UserLoginDetail:
+    LoginDict={}
+    def __init__(self,Username,Password):
+        self.username=Username
+        self.password=Password
+        UserLoginDetal.LoginDict[Username]=Password
+    
+    def __str__(self):
+        dict={}
+        dict[self.username]=self.password
+        return dict
