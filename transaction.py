@@ -76,7 +76,7 @@ class UserLoginDetail:
     def __init__(self,Username,Password):
         self.username=Username
         self.password=Password
-        UserLoginDetail.LoginDict[Username]=Password
+        
     
     def __str__(self):
         dict={}

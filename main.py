@@ -127,7 +127,7 @@ def signup_action():
         elif not new_username or not new_password:
             tkmsg.showerror("Signup Failed", "Both fields are required!")
         else:
-            obj=UserLoginDetail(new_username,new_password)
+            UserLoginDetail.LoginDict[new_username]=new_password
             tkmsg.showinfo("Signup Successful", "Account created successfully!")
             signup_frame.place_forget()
             show_heading()
@@ -219,8 +219,8 @@ def button_action(option,username):
         # from budget_logic import cat_display
         BudgetPlanner.cat_display(app,main_frame,listOfTransactions)
     elif option == 10:
-        # from report_generator import saveToCSV
-        BudgetPlanner.saveToCSV(username, listOfTransactions)
+        from report_generator import saveToCSV
+        saveToCSV(username, listOfTransactions)
     else:
         tkmsg.showinfo("No Feature")
 
