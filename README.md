@@ -53,7 +53,7 @@ The **Monthly Budget Management Application** is a GUI-based tool to help users 
    ```bash
    python main.py
    ```
-
+4. Use username = test and password = test for viewing sample transactions
 ---
 
 ## Supported Operating Systems
