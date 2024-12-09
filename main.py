@@ -4,6 +4,7 @@ from datetime import datetime
 import os, pickle, budget_logic, csv
 import tkinter.messagebox as tkmsg
 from transaction import Transaction, Income, Expense, Savings
+from budget_logic import BudgetPlanner
 
 username = None
 listOfTransactions = []
@@ -187,8 +188,8 @@ def load_main_frame(username):
 
 def button_action(option,username):
     if option == 1:
-        from budget_logic import add_transaction_window
-        add_transaction_window(app, main_frame, listOfTransactions)
+        # from budget_logic import add_transaction_window
+        BudgetPlanner.add_transaction_window(app, main_frame, listOfTransactions)
         print(listOfTransactions)
     elif option == 9:
         main_frame.place_forget()
@@ -197,29 +198,29 @@ def button_action(option,username):
     elif option == 0:
         app.destroy()
     elif option == 2:
-        from budget_logic import edit_transaction
-        edit_transaction(listOfTransactions, app, main_frame)
+        # from budget_logic import edit_transaction
+        BudgetPlanner.edit_transaction(listOfTransactions, app, main_frame)
     elif option == 3:
-        from budget_logic import delete_transaction
-        delete_transaction(app,main_frame,listOfTransactions)
+        # from budget_logic import delete_transaction
+        BudgetPlanner.delete_transaction(app,main_frame,listOfTransactions)
     elif option == 4:
-        from budget_logic import calculate_balance
-        calculate_balance(app,main_frame,listOfTransactions)
+        # from budget_logic import calculate_balance
+        BudgetPlanner.calculate_balance(app,main_frame,listOfTransactions)
     elif option == 6:
-        from budget_logic import progress
-        progress(app,main_frame,listOfTransactions)
+        # from budget_logic import progress
+        BudgetPlanner.progress(app,main_frame,listOfTransactions)
     elif option == 7:
-        from budget_logic import list_transactions
-        list_transactions(app,main_frame,listOfTransactions)
+        # from budget_logic import list_transactions
+        BudgetPlanner.list_transactions(app,main_frame,listOfTransactions)
     elif option == 8:
-        from budget_logic import transaction_by_date
-        transaction_by_date(app,main_frame,listOfTransactions)
+        # from budget_logic import transaction_by_date
+        BudgetPlanner.transaction_by_date(app,main_frame,listOfTransactions)
     elif option == 5:
-        from budget_logic import cat_display
-        cat_display(app,main_frame,listOfTransactions)
+        # from budget_logic import cat_display
+        BudgetPlanner.cat_display(app,main_frame,listOfTransactions)
     elif option == 10:
-        from report_generator import saveToCSV
-        saveToCSV(username, listOfTransactions)
+        # from report_generator import saveToCSV
+        BudgetPlanner.saveToCSV(username, listOfTransactions)
     else:
         tkmsg.showinfo("No Feature")
 
