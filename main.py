@@ -127,7 +127,7 @@ def signup_action():
         elif not new_username or not new_password:
             tkmsg.showerror("Signup Failed", "Both fields are required!")
         else:
-            obj=UserLoginDetal(new_username,new_password)
+            obj=UserLoginDetail(new_username,new_password)
             tkmsg.showinfo("Signup Successful", "Account created successfully!")
             signup_frame.place_forget()
             show_heading()
