@@ -122,7 +122,7 @@ def signup_action():
         new_username = new_username_entry.get()
         new_password = new_password_entry.get()
 
-        if new_username in UserLoginDetail.UserLoginDetail.LoginDict:
+        if new_username in UserLoginDetail.LoginDict:
             tkmsg.showerror("Signup Failed", "Username already exists!")
         elif not new_username or not new_password:
             tkmsg.showerror("Signup Failed", "Both fields are required!")
