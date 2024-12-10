@@ -1,20 +1,13 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-from datetime import datetime
 import os, pickle, budget_logic, csv
 import tkinter.messagebox as tkmsg
 from transaction import Transaction, Income, Expense, Savings, UserLoginDetail
 from budget_logic import BudgetPlanner
 
 username = None
-listOfTransactions = []
-file_path = 'user_data.pkl'
-if os.path.exists(file_path):
-    with open(file_path, 'rb') as file:
-        UserLoginDetail.LoginDict = pickle.load(file)
-else:
-    file = open(file_path, 'wb')
-    UserLoginDetail.LoginDict = {}
+
+UserLoginDetail.loadDict()
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
@@ -70,7 +63,7 @@ def hide_heading():
 
 
 def login_action():
-    global username, listOfTransactions
+    global username
     username = username_entry.get()
     password = password_entry.get()
 
@@ -78,16 +71,7 @@ def login_action():
         tkmsg.showinfo("Login Successful", f"Welcome, {username}!")
         hide_heading()  
         load_main_frame(username)
-
-        # Load transactions for the logged-in user
-        file_path = f"{username}"
-        if os.path.exists(file_path):
-            file = open(file_path + '/transactions.pkl', 'rb')
-            listOfTransactions = pickle.load(file)
-        else:
-            os.mkdir(file_path)
-            file = open(file_path + '/transactions.pkl', 'wb')
-            listOfTransactions = []
+        Transaction.loadTransactions(username)
     else:
         tkmsg.showerror("Invalid Login", "Invalid Username or Password.")
         username_entry.delete(0, "end")
@@ -188,7 +172,7 @@ def load_main_frame(username):
 def button_action(option,username):
     if option == 1:
         # from budget_logic import add_transaction_window
-        BudgetPlanner.add_transaction_window(app, main_frame, listOfTransactions)
+        BudgetPlanner.add_transaction_window(app, main_frame)
     elif option == 9:
         main_frame.place_forget()
         login_frame.place(relx=0.4, rely=0.5, anchor="center")
@@ -197,28 +181,28 @@ def button_action(option,username):
         app.destroy()
     elif option == 2:
         # from budget_logic import edit_transaction
-        BudgetPlanner.edit_transaction(listOfTransactions, app, main_frame)
+        BudgetPlanner.edit_transaction(app, main_frame)
     elif option == 3:
         # from budget_logic import delete_transaction
-        BudgetPlanner.delete_transaction(app,main_frame,listOfTransactions)
+        BudgetPlanner.delete_transaction(app,main_frame)
     elif option == 4:
         # from budget_logic import calculate_balance
-        BudgetPlanner.calculate_balance(app,main_frame,listOfTransactions)
+        BudgetPlanner.calculate_balance(app,main_frame)
     elif option == 6:
         # from budget_logic import progress
-        BudgetPlanner.progress(app,main_frame,listOfTransactions)
+        BudgetPlanner.progress(app,main_frame)
     elif option == 7:
         # from budget_logic import list_transactions
-        BudgetPlanner.list_transactions(app,main_frame,listOfTransactions)
+        BudgetPlanner.list_transactions(app,main_frame)
     elif option == 8:
         # from budget_logic import transaction_by_date
-        BudgetPlanner.transaction_by_date(app,main_frame,listOfTransactions)
+        BudgetPlanner.transaction_by_date(app,main_frame)
     elif option == 5:
         # from budget_logic import cat_display
-        BudgetPlanner.cat_display(app,main_frame,listOfTransactions)
+        BudgetPlanner.cat_display(app,main_frame)
     elif option == 10:
         from report_generator import saveToCSV
-        saveToCSV(username, listOfTransactions)
+        saveToCSV(username)
         tkmsg.showinfo("Report Generated!", f"Report saved in {username}/monthlyreport.csv")
     else:
         tkmsg.showinfo("No Feature")
@@ -247,53 +231,7 @@ signup_button.place(relx=0.4, rely=0.90, anchor="center")
 show_heading()
 app.mainloop()
 
-with open(file_path, 'wb') as file:
-    pickle.dump(UserLoginDetail.LoginDict, file)
-
-file_path1 = f"{username}/transactions.pkl"
-with open(file_path1, 'wb') as file:
-    pickle.dump(listOfTransactions, file)
-
-    header = [
-        "Transaction Type", 
-        "Amount", 
-        "Date", 
-        "Category/Source", 
-        "Expense Type/Goal", 
-        "Target Amount"
-    ]
-
-listOfTransactions = sorted(listOfTransactions, key=lambda transaction: datetime.strptime(transaction.date, "%d-%m-%Y"))
-    
-with open(f"{username}/transactions.csv", mode="w", newline="") as file:
-    writer = csv.writer(file)
-    writer.writerow(header)
-
-    for transaction in listOfTransactions:
-        if isinstance(transaction, Income):
-            writer.writerow([
-                "Income",
-                transaction.amount,
-                transaction.date,
-                transaction.source,
-                "",
-                ""
-            ])
-        elif isinstance(transaction, Expense):
-            writer.writerow([
-                "Expense",
-                transaction.amount,
-                transaction.date,
-                transaction.category,
-                transaction.expense_type,
-                ""
-            ])
-        elif isinstance(transaction, Savings):
-            writer.writerow([
-                "Savings",
-                transaction.amount,
-                transaction.date,
-                transaction.goal,
-                "",
-                transaction.target_amount
-            ])
+UserLoginDetail.saveDict()
+Transaction.sortByDate()
+Transaction.saveTransactions(username)
+Transaction.saveToCSV(username)

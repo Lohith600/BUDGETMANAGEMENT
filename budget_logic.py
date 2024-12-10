@@ -34,7 +34,7 @@ class BudgetPlanner:
                     return s[0:2] + '-' + s[2:4] + '-' + s[4:8]
         return None
 
-    def add_transaction_window(app, main_frame, listOfTransactions):
+    def add_transaction_window(app, main_frame):
         
         
         main_frame.place_forget()
@@ -93,7 +93,7 @@ class BudgetPlanner:
                     tkmsg.showerror("Error", "Invalid transaction type!")
                     return
 
-                listOfTransactions.append(transaction)
+                Transaction.addTransaction(transaction)
                 tkmsg.showinfo("Success", "Transaction added successfully!")
                 back_to_main()
 
@@ -167,7 +167,7 @@ class BudgetPlanner:
                     try:
                         target = float(additional)
                         transaction = Savings(amount, validated_date, details, target)
-                        for obj in listOfTransactions:
+                        for obj in Transaction.lst:
                                 if isinstance(obj, Savings):
                                     if obj.goal == details:
                                         obj.target_amount = target
@@ -178,7 +178,7 @@ class BudgetPlanner:
                     tkmsg.showerror("Error", "Invalid transaction type!")
                     return
 
-                listOfTransactions.append(transaction)
+                Transaction.addTransaction(transaction)
                 tkmsg.showinfo("Success", "Transaction added successfully!")
                 back_to_main()
 
@@ -259,7 +259,7 @@ class BudgetPlanner:
                     tkmsg.showerror("Error", "Invalid transaction type!")
                     return
 
-                listOfTransactions.append(transaction)
+                Transaction.addTransaction(transaction)
                 tkmsg.showinfo("Success", "Transaction added successfully!")
                 back_to_main()
 
@@ -288,18 +288,14 @@ class BudgetPlanner:
         back_button.place(relx=0.35,rely=0.9)
 
 
-    def edit_transaction(listofTransactions, app, main_frame):
+    def edit_transaction(app, main_frame):
         main_frame.place_forget()
 
         edit_transaction_frame = ctk.CTkFrame(app, width=810, height=600)
         edit_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  # Center the frame
 
-        if len(listofTransactions) == 0:
-            text1 = "No Transactions Yet"
-        else:
-            text1 = ""
-            for i, transaction in enumerate(listofTransactions):
-                text1 += f"{i + 1}. {transaction}\n\n"
+        Transaction.sortByDate()
+        text1 = Transaction.listTransactions()
 
         textbox_frame = ctk.CTkFrame(edit_transaction_frame, width=800, height=400)
         textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -329,10 +325,10 @@ class BudgetPlanner:
             num = trans_entry.get()
             try:
                 num = int(num)
-                if num <= 0 or num > len(listofTransactions):
+                if num <= 0 or num > len(Transaction.lst):
                     tkmsg.showinfo("Transaction not found", "The transaction number you entered does not exist.")
                 else:
-                    edit_trans(app, num, listofTransactions)
+                    edit_trans(app, num)
             except ValueError:
                 tkmsg.showinfo("Invalid input", "Please enter a valid number.")
 
@@ -347,7 +343,7 @@ class BudgetPlanner:
         back_button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
         back_button.grid(row=0, column=2, padx=30, pady=10)
 
-        def edit_trans(app, x, listOfTransactions):
+        def edit_trans(app, x):
             edit_transaction_frame.place_forget()
 
         
@@ -404,8 +400,8 @@ class BudgetPlanner:
                         tkmsg.showerror("Error", "Invalid transaction type!")
                         return
 
-                    listOfTransactions[x-1]=transaction
-                    tkmsg.showinfo("Success", "Transaction added successfully!")
+                    Transaction.replaceTransaction(transaction, x-1)
+                    tkmsg.showinfo("Success", "Transaction edited successfully!")
                     back_to_main()
 
                 save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
@@ -477,7 +473,7 @@ class BudgetPlanner:
                         try:
                             target = float(additional)
                             transaction = Savings(amount, date, details, target)
-                            for obj in listOfTransactions:
+                            for obj in Transaction.lst:
                                 if isinstance(obj, Savings):
                                     if obj.goal == details:
                                         obj.target_amount = target
@@ -487,8 +483,9 @@ class BudgetPlanner:
                     else:
                         tkmsg.showerror("Error", "Invalid transaction type!")
                         return
-
-                    tkmsg.showinfo("Success", "Transaction added successfully!")
+                    
+                    Transaction.replaceTransaction(transaction, x-1)
+                    tkmsg.showinfo("Success", "Transaction edited successfully!")
                     back_to_main()
 
                 save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
@@ -568,8 +565,8 @@ class BudgetPlanner:
                         tkmsg.showerror("Error", "Invalid transaction type!")
                         return
 
-                    listOfTransactions[x-1]=transaction
-                    tkmsg.showinfo("Success", "Transaction added successfully!")
+                    Transaction.replaceTransaction(transaction,x-1)
+                    tkmsg.showinfo("Success", "Transaction edited successfully!")
                     back_to_main()
 
                 save_button = ctk.CTkButton(Incomeframe, text="Save Transaction", height=40, width=200,
@@ -597,22 +594,16 @@ class BudgetPlanner:
             back_button.place(relx=0.35,rely=0.9)
 
 
-    def delete_transaction(app, main_frame, listofTransactions):
+    def delete_transaction(app, main_frame):
         main_frame.place_forget()
 
         
         del_transaction_frame = ctk.CTkFrame(app, width=810, height=600)
         del_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  
 
-        
-        if len(listofTransactions) == 0:
-            text1 = "No Transactions Yet."
-        else:
-            text1 = ""
-            for i, transaction in enumerate(listofTransactions):
-                text1 += f"{i + 1}. {transaction}\n\n"
+        Transaction.sortByDate
+        text1 = Transaction.listTransactions()
 
-        
         textbox_frame = ctk.CTkFrame(del_transaction_frame, width=800, height=400)
         textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
@@ -647,10 +638,10 @@ class BudgetPlanner:
             num = trans_entry.get()
             try:
                 num = int(num)
-                if num <= 0 or num > len(listofTransactions):
+                if num <= 0 or num > len(Transaction.lst):
                     tkmsg.showinfo("Transaction not found", "The transaction number you entered does not exist.")
                 else:
-                    deleted_transaction = listofTransactions.pop(num - 1)
+                    deleted_transaction = Transaction.deleteTransaction(num-1)
                     tkmsg.showinfo("Success", f"Transaction {num} deleted: {deleted_transaction}")
                     back_to_main()
             except ValueError:
@@ -674,7 +665,7 @@ class BudgetPlanner:
         input_frame.grid_columnconfigure(1, weight=1)
         input_frame.grid_columnconfigure(2, weight=1)
 
-    def calculate_balance(app, main_frame, listofTransactions):
+    def calculate_balance(app, main_frame):
         
         main_frame.place_forget()
 
@@ -686,7 +677,7 @@ class BudgetPlanner:
             return totalIncome, totalExpense, totalIncome - totalExpense - totalSavings, totalSavings
 
         
-        totalIncome, totalExpense, netBalance, totalSavings = calculate_totals(listofTransactions)
+        totalIncome, totalExpense, netBalance, totalSavings = calculate_totals(Transaction.lst)
 
         
         balance_frame = ctk.CTkFrame(app, height=600, width=500)
@@ -713,7 +704,7 @@ class BudgetPlanner:
         
         back_button = ctk.CTkButton(balance_frame, text="Back", command=back_to_main)
         back_button.place(relx=0.5, rely=0.8, anchor="center")  
-    def transaction_by_date(app, main_frame, listofTransactions):
+    def transaction_by_date(app, main_frame):
         main_frame.place_forget()
 
         
@@ -741,7 +732,7 @@ class BudgetPlanner:
             text1 = ""
 
             
-            for transaction in listofTransactions:
+            for transaction in Transaction.lst:
                 if transaction.date == x:
                     text1 += str(transaction) + "\n"
 
@@ -767,17 +758,14 @@ class BudgetPlanner:
 
         back_button = ctk.CTkButton(display, text="Back", command=back_to_main)
         back_button.place(relx=0.5, rely=0.9, anchor="center")
-    def list_transactions(app, main_frame, listofTransactions):
+    def list_transactions(app, main_frame):
         main_frame.place_forget()
 
         list_transaction_frame = ctk.CTkFrame(app, width=810, height=600)
         list_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  
-        if len(listofTransactions) == 0:
-            text1 = "No Transaction Yet"
-        else:
-            text1 = ""
-            for i, transaction in enumerate(listofTransactions):
-                text1 += f"{i + 1}. {transaction}\n\n"
+        
+        Transaction.sortByDate()
+        text1 = Transaction.listTransactions()
 
         textbox_frame = ctk.CTkFrame(list_transaction_frame, width=800, height=400)
         textbox_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -803,16 +791,16 @@ class BudgetPlanner:
 
         button = ctk.CTkButton(input_frame, text="Back", command=back_to_main)
         button.pack(pady=10)  
-    def cat_display(app, main_frame, listoftransactions):
+    def cat_display(app, main_frame):
         main_frame.place_forget()
 
         frame = ctk.CTkFrame(app, width=810, height=600)
         frame.place(relx=0.5, rely=0.6, anchor="center")
 
 
-        def categorize(listoftransactions):
+        def categorize():
             categoryTotal = {}
-            for transaction in listoftransactions:
+            for transaction in Transaction.lst:
                 if isinstance(transaction, Expense):
                     if transaction.category in categoryTotal:
                         categoryTotal[transaction.category] += transaction.amount
@@ -820,7 +808,7 @@ class BudgetPlanner:
                         categoryTotal[transaction.category] = transaction.amount
             return categoryTotal
 
-        x = categorize(listoftransactions)
+        x = categorize()
         if not x:
             text1 = "No Expenses Yet"
         else:
@@ -862,14 +850,14 @@ class BudgetPlanner:
         back_button.place(relx=0.375,rely=0.5)
 
 
-    def progress(app, main_frame, listOfTransactions):
+    def progress(app, main_frame):
         main_frame.place_forget()
 
         progress_frame = ctk.CTkFrame(app, width=810, height=600)
         progress_frame.place(relx=0.5, rely=0.6, anchor="center")  
         
         goals = {}
-        for transaction in listOfTransactions:
+        for transaction in Transaction.lst:
             if isinstance(transaction, Savings):
                 if transaction.goal in goals.keys():
                     goals[transaction.goal][1] += transaction.amount
