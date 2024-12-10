@@ -145,7 +145,6 @@ def signup_action():
 
 
 def switch_to_login(frame_to_hide):
-    print(UserLoginDetail.LoginDict)
     frame_to_hide.place_forget()
     login_frame.place(relx=0.4, rely=0.5, anchor="center")
     show_heading()
@@ -190,7 +189,6 @@ def button_action(option,username):
     if option == 1:
         # from budget_logic import add_transaction_window
         BudgetPlanner.add_transaction_window(app, main_frame, listOfTransactions)
-        print(listOfTransactions)
     elif option == 9:
         main_frame.place_forget()
         login_frame.place(relx=0.4, rely=0.5, anchor="center")

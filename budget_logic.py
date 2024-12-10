@@ -274,15 +274,18 @@ class BudgetPlanner:
             back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
                                         fg_color="#fff5ea", text_color="#924444", command=back_to_main)
             back_button.pack(pady=10)
+        def back_button1():
+            add_transaction_frame.place_forget()
+            main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-
-
-        button1=ctk.CTkButton(add_transaction_frame,text="income",command=Income1)
-        button2=ctk.CTkButton(add_transaction_frame,text="expense",command=Expense1)
-        button3=ctk.CTkButton(add_transaction_frame,text="savings",command=Savings1)
+        back_button=ctk.CTkButton(add_transaction_frame,text="Back",command=back_button1)
+        button1=ctk.CTkButton(add_transaction_frame,text="Income",command=Income1)
+        button2=ctk.CTkButton(add_transaction_frame,text="Expense",command=Expense1)
+        button3=ctk.CTkButton(add_transaction_frame,text="Savings",command=Savings1)
         button1.place(relx=0.35,rely=0.3)
         button2.place(relx=0.35,rely=0.5)
         button3.place(relx=0.35,rely=0.7)
+        back_button.place(relx=0.35,rely=0.9)
 
 
     def edit_transaction(listofTransactions, app, main_frame):
@@ -292,7 +295,7 @@ class BudgetPlanner:
         edit_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  # Center the frame
 
         if len(listofTransactions) == 0:
-            text1 = "no transaction yet"
+            text1 = "No Transactions Yet"
         else:
             text1 = ""
             for i, transaction in enumerate(listofTransactions):
@@ -580,15 +583,18 @@ class BudgetPlanner:
                 back_button = ctk.CTkButton(Incomeframe, text="Back", height=40, width=200,
                                             fg_color="#fff5ea", text_color="#924444", command=back_to_main)
                 back_button.pack(pady=10)
+            def back_button1():
+                add_transaction_frame.place_forget()
+                main_frame.place(relx=0.4, rely=0.55, anchor="center")
 
-
-
+            back_button=ctk.CTkButton(add_transaction_frame,text="Back",command=back_button1)
             button1=ctk.CTkButton(add_transaction_frame,text="income",command=Income1)
             button2=ctk.CTkButton(add_transaction_frame,text="expense",command=Expense1)
             button3=ctk.CTkButton(add_transaction_frame,text="savings",command=Savings1)
             button1.place(relx=0.35,rely=0.3)
             button2.place(relx=0.35,rely=0.5)
             button3.place(relx=0.35,rely=0.7)
+            back_button.place(relx=0.35,rely=0.9)
 
 
     def delete_transaction(app, main_frame, listofTransactions):
@@ -600,7 +606,7 @@ class BudgetPlanner:
 
         
         if len(listofTransactions) == 0:
-            text1 = "No transactions yet."
+            text1 = "No Transactions Yet."
         else:
             text1 = ""
             for i, transaction in enumerate(listofTransactions):
@@ -692,10 +698,10 @@ class BudgetPlanner:
         box.configure(font=("Arial", 22))  
         box.insert(
             "0.0",
-            f"Your total income is: {totalIncome}\n\n\n"
-            f"Your total expense is: {totalExpense}\n\n\n"
-            f"Your total savings are: {totalSavings}\n\n\n"
-            f"Your net balance is: {netBalance}"
+            f"Your Total Income is: {totalIncome}\n\n\n"
+            f"Your Total Expense is: {totalExpense}\n\n\n"
+            f"Your Total Savings are: {totalSavings}\n\n\n"
+            f"Your Net Balance is: {netBalance}"
         )
         box.configure(state="disabled")  
 
@@ -767,7 +773,7 @@ class BudgetPlanner:
         list_transaction_frame = ctk.CTkFrame(app, width=810, height=600)
         list_transaction_frame.place(relx=0.5, rely=0.6, anchor="center")  
         if len(listofTransactions) == 0:
-            text1 = "no transaction yet"
+            text1 = "No Transaction Yet"
         else:
             text1 = ""
             for i, transaction in enumerate(listofTransactions):
@@ -816,7 +822,7 @@ class BudgetPlanner:
 
         x = categorize(listoftransactions)
         if not x:
-            text1 = "No expenses yet"
+            text1 = "No Expenses Yet"
         else:
             
             text1 = f"{'EXPENSE CATEGORY'.ljust(30)}{'AMOUNT'.rjust(10)}\n\n"
